@@ -128,6 +128,47 @@ export function applyAction(scene: Scene, action: SceneAction): Scene {
   }
 }
 
+/**
+ * Where a new sticker goes: its default spot, else the mirrored spot on the other side, else a
+ * step away from either, so tapping stickers that share a default does not pile them up. Steps
+ * grow with the sticker so big ones do not still cover each other.
+ */
+export function freeSpot(stickers: StickerInstance[], placement: Placement): Placement {
+  const step = Math.max(0.14, placement.scale * 0.6);
+  const taken = (x: number, y: number) =>
+    stickers.some((s) => Math.hypot(s.x - x, s.y - y) < step * 0.75);
+  const { x, y } = placement;
+  const mx = 1 - x;
+  const towardCenter = (v: number) => (v > 0.5 ? -step : step);
+  const candidates: Array<[number, number]> = [
+    [x, y],
+    [mx, y],
+    [x + towardCenter(x), y],
+    [mx + towardCenter(mx), y],
+    [x, y + towardCenter(y)],
+    [mx, y + towardCenter(y)],
+  ];
+  for (const [cx, cy] of candidates) {
+    if (cx >= 0.08 && cx <= 0.92 && cy >= 0.08 && cy <= 0.92 && !taken(cx, cy)) {
+      return { ...placement, x: cx, y: cy };
+    }
+  }
+  return placement;
+}
+
+/**
+ * The copy a second tap on a sticker tile removes: the selected one if it is that sticker,
+ * otherwise the most recently added. Null when the sticker is not on the avatar.
+ */
+export function copyToRemove(
+  stickers: StickerInstance[],
+  ref: string,
+  selected: string | null,
+): string | null {
+  const copies = stickers.filter((s) => s.ref === ref);
+  return (copies.find((s) => s.uid === selected) ?? copies.at(-1))?.uid ?? null;
+}
+
 /** Undo history. Every committed action is one step; `preview` changes the present without one. */
 export type History = { past: Scene[]; present: Scene; future: Scene[] };
 

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyAction,
+  copyToRemove,
+  freeSpot,
   createHistory,
   emptyScene,
   historyReducer,
@@ -115,5 +117,73 @@ describe('historyReducer', () => {
     h = historyReducer(h, { type: 'undo' });
     h = historyReducer(h, { type: 'commit', action: { type: 'setFrame', frame: 'x/z' } });
     expect(h.future).toEqual([]);
+  });
+});
+
+describe('freeSpot', () => {
+  const at = (uid: string, x: number, y: number, ref = 'x/y') => ({
+    uid,
+    ref,
+    flipX: false,
+    x,
+    y,
+    scale: 0.4,
+    rotation: 0,
+  });
+  const spot = { x: 0.8, y: 0.74, scale: 0.42, rotation: 0 };
+
+  it('keeps the default spot when it is free', () => {
+    expect(freeSpot([], spot)).toEqual(spot);
+  });
+
+  it('mirrors to the other side when the default spot is taken', () => {
+    const next = freeSpot([at('a', 0.8, 0.74)], spot);
+    expect(next.x).toBeCloseTo(0.2);
+    expect(next.y).toBeCloseTo(0.74);
+  });
+
+  it('then steps toward the center, far enough for big stickers not to cover each other', () => {
+    const next = freeSpot([at('a', 0.8, 0.74), at('b', 0.2, 0.74)], spot);
+    expect(next.x).toBeCloseTo(0.8 - 0.42 * 0.6);
+    expect(Math.hypot(next.x - 0.8, next.y - 0.74)).toBeGreaterThan(0.2);
+  });
+
+  it('stays inside the circle', () => {
+    const crowd = [
+      at('a', 0.8, 0.74),
+      at('b', 0.2, 0.74),
+      at('c', 0.548, 0.74),
+      at('d', 0.452, 0.74),
+    ];
+    const next = freeSpot(crowd, spot);
+    expect(next.x).toBeGreaterThanOrEqual(0.08);
+    expect(next.x).toBeLessThanOrEqual(0.92);
+    expect(next.y).toBeLessThanOrEqual(0.92);
+  });
+});
+
+describe('copyToRemove', () => {
+  const s = (uid: string, ref: string) => ({
+    uid,
+    ref,
+    flipX: false,
+    x: 0.5,
+    y: 0.5,
+    scale: 0.4,
+    rotation: 0,
+  });
+  const stickers = [s('a', 'hat'), s('b', 'scarf'), s('c', 'hat')];
+
+  it('is null when the sticker is not on the avatar', () => {
+    expect(copyToRemove(stickers, 'tree', null)).toBeNull();
+  });
+
+  it('removes the most recent copy by default', () => {
+    expect(copyToRemove(stickers, 'hat', null)).toBe('c');
+  });
+
+  it('removes the selected copy when it is that sticker', () => {
+    expect(copyToRemove(stickers, 'hat', 'a')).toBe('a');
+    expect(copyToRemove(stickers, 'hat', 'b')).toBe('c');
   });
 });

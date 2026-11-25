@@ -14,6 +14,8 @@ Konva.hitOnDragEnabled = true;
 const ACCENT = '#f7b696';
 const coarsePointer =
   typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+const reducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 type Props = {
   size: number;
@@ -46,9 +48,34 @@ function StickerNode({
   onLoaded: () => void;
 }) {
   const image = useImage(assets.get(sticker.ref)?.src);
+  const nodeRef = useRef<Konva.Image>(null);
   useEffect(() => {
     if (image) onLoaded();
   }, [image, onLoaded]);
+
+  // Pop in when the sticker first appears: a small overshoot reads as "placed".
+  useEffect(() => {
+    const node = nodeRef.current;
+    if (!image || !node || reducedMotion()) return;
+    const sx = node.scaleX();
+    const sy = node.scaleY();
+    node.scale({ x: sx * 0.6, y: sy * 0.6 });
+    node.opacity(0);
+    const tween = new Konva.Tween({
+      node,
+      duration: 0.32,
+      scaleX: sx,
+      scaleY: sy,
+      opacity: 1,
+      easing: Konva.Easings.BackEaseOut,
+    });
+    tween.play();
+    return () => {
+      tween.finish();
+    };
+    // Only on first appearance, not on every move or resize.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [image]);
   if (!image) return null;
   const width = size;
   const height = (size * image.naturalHeight) / image.naturalWidth;
@@ -67,6 +94,7 @@ function StickerNode({
 
   return (
     <KonvaImage
+      ref={nodeRef}
       id={sticker.uid}
       name="sticker"
       image={image}

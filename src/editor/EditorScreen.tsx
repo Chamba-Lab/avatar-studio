@@ -6,7 +6,14 @@ import { Icon, type IconName } from '../ui/Icon.tsx';
 import { AvatarStage } from './AvatarStage.tsx';
 import { exportAvatar } from './exportAvatar.ts';
 import { DecorPanel, type Tab } from './DecorPanel.tsx';
-import { createHistory, historyReducer, type Scene, type SceneAction } from './scene.ts';
+import {
+  copyToRemove,
+  createHistory,
+  freeSpot,
+  historyReducer,
+  type Scene,
+  type SceneAction,
+} from './scene.ts';
 
 type Props = {
   photo: LoadedPhoto;
@@ -40,11 +47,13 @@ function ActionButton({
   label,
   onClick,
   tone = 'default',
+  disabled = false,
 }: {
   icon: IconName;
   label: string;
   onClick: () => void;
   tone?: 'default' | 'danger' | 'confirm';
+  disabled?: boolean;
 }) {
   const tones = {
     default: 'text-text hover:bg-white/6',
@@ -57,7 +66,8 @@ function ActionButton({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className={`flex h-10 w-11 items-center justify-center rounded-[13px] transition-transform duration-150 active:scale-90 ${tones[tone]}`}
+      disabled={disabled}
+      className={`flex h-10 w-11 items-center justify-center rounded-[13px] transition-[transform,opacity] duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${tones[tone]}`}
     >
       <Icon name={icon} size={19} />
     </button>
@@ -79,6 +89,12 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
     rawSelected && scene.stickers.some((s) => s.uid === rawSelected) ? rawSelected : null;
 
   const commit = (action: SceneAction) => dispatch({ type: 'commit', action });
+  const stickerUsage = useMemo(() => {
+    const usage = new Map<string, number>();
+    for (const s of scene.stickers) usage.set(s.ref, (usage.get(s.ref) ?? 0) + 1);
+    return usage;
+  }, [scene.stickers]);
+  const selectedRef = scene.stickers.find((s) => s.uid === selected)?.ref ?? null;
   const photoPreview = useMemo(() => photo.canvas.toDataURL('image/jpeg', 0.6), [photo]);
 
   useEffect(() => {
@@ -124,6 +140,8 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
       <ActionButton
         icon="front"
         label="Bring to front"
+        // Already the top layer: nothing would change, so say so instead of doing nothing.
+        disabled={scene.stickers.at(-1)?.uid === selected}
         onClick={() => commit({ type: 'bringToFront', uid: selected })}
       />
       <ActionButton
@@ -150,7 +168,7 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
       ? 'Frames sit on the edge of the circle'
       : tab === 'photo'
         ? 'Center your face inside the circle'
-        : 'Tap a sticker to add it';
+        : 'Tap a sticker to add it, tap again to remove it';
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden lg:flex-row">
@@ -246,13 +264,26 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
           onBackground={(background) => commit({ type: 'setBackground', background })}
           photoPreview={photoPreview}
           onFrame={(frame) => commit({ type: 'setFrame', frame })}
+          stickerUsage={stickerUsage}
+          selectedRef={selectedRef}
           onSticker={(themeId, s) => {
+            const ref = assetKey(themeId, s.id);
+            // A tile toggles: a second tap takes that sticker off instead of stacking another.
+            // Extra copies come from Duplicate on the selected sticker.
+            const existing = copyToRemove(scene.stickers, ref, selected);
+            if (existing) {
+              commit({ type: 'removeSticker', uid: existing });
+              return;
+            }
             const uid = newUid();
             commit({
               type: 'addSticker',
               uid,
-              ref: assetKey(themeId, s.id),
-              placement: s.defaults ?? { x: 0.5, y: 0.5, scale: 0.4, rotation: 0 },
+              ref,
+              placement: freeSpot(
+                scene.stickers,
+                s.defaults ?? { x: 0.5, y: 0.5, scale: 0.4, rotation: 0 },
+              ),
             });
             setSelected(uid);
           }}
