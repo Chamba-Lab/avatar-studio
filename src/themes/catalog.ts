@@ -52,3 +52,25 @@ export const themes: Theme[] = sortThemes(loadThemes(), new Date());
 
 /** Global asset key, e.g. "christmas/santa-hat". */
 export const assetKey = (themeId: string, assetId: string) => `${themeId}/${assetId}`;
+
+export type AssetInfo = {
+  key: string;
+  themeId: string;
+  name: string;
+  src: string;
+  kind: 'frame' | 'sticker';
+};
+
+/** Every frame and sticker by its global key, so a scene can mix assets from any theme. */
+export const assets: ReadonlyMap<string, AssetInfo> = new Map(
+  themes.flatMap((t) => [
+    ...t.frames.map((f): [string, AssetInfo] => [
+      assetKey(t.id, f.id),
+      { key: assetKey(t.id, f.id), themeId: t.id, name: f.name, src: f.src, kind: 'frame' },
+    ]),
+    ...t.stickers.map((s): [string, AssetInfo] => [
+      assetKey(t.id, s.id),
+      { key: assetKey(t.id, s.id), themeId: t.id, name: s.name, src: s.src, kind: 'sticker' },
+    ]),
+  ]),
+);
