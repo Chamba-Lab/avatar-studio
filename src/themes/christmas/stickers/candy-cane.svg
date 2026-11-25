@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><g fill="none" stroke-linecap="round"><path d="M126 178V78a32 32 0 0 0-64 0v10" stroke="#111" stroke-width="34"/><path d="M126 178V78a32 32 0 0 0-64 0v10" stroke="#FCF6E8" stroke-width="22"/><path d="M126 178V78a32 32 0 0 0-64 0v10" stroke="#E53935" stroke-width="22" stroke-dasharray="12 14"/></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+<defs><mask id="cane"><path d="M118 176V72a32 32 0 0 0-64 0v12" fill="none" stroke="#fff" stroke-width="24" stroke-linecap="round"/></mask></defs>
+<path d="M118 176V72a32 32 0 0 0-64 0v12" fill="none" stroke="#111" stroke-width="38" stroke-linecap="round"/>
+<g mask="url(#cane)">
+<rect width="200" height="200" fill="#FCF6E8"/>
+<g transform="rotate(-38 100 100)" fill="#E53935"><rect x="-120" y="-120" width="11" height="440"/><rect x="-94" y="-120" width="11" height="440"/><rect x="-68" y="-120" width="11" height="440"/><rect x="-42" y="-120" width="11" height="440"/><rect x="-16" y="-120" width="11" height="440"/><rect x="10" y="-120" width="11" height="440"/><rect x="36" y="-120" width="11" height="440"/><rect x="62" y="-120" width="11" height="440"/><rect x="88" y="-120" width="11" height="440"/><rect x="114" y="-120" width="11" height="440"/><rect x="140" y="-120" width="11" height="440"/><rect x="166" y="-120" width="11" height="440"/><rect x="192" y="-120" width="11" height="440"/><rect x="218" y="-120" width="11" height="440"/><rect x="244" y="-120" width="11" height="440"/><rect x="270" y="-120" width="11" height="440"/></g>
+<path d="M126 176V72a40 40 0 0 0-10-26" fill="none" stroke="#B71C1C" stroke-opacity=".35" stroke-width="10"/>
+<path d="M110 170V76" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g stroke="#111" stroke-width="5" stroke-linejoin="round">
+<path d="M118 110l-24-12v26z" fill="#2E7D32"/><path d="M118 110l24-12v26z" fill="#43A047"/>
+<path d="M114 112l-10 26M122 112l10 26" fill="none" stroke-width="12" stroke-linecap="round"/><path d="M114 112l-10 26M122 112l10 26" fill="none" stroke="#2E7D32" stroke-width="5" stroke-linecap="round"/>
+<circle cx="118" cy="110" r="8" fill="#43A047"/></g></svg>
