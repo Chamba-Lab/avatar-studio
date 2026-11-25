@@ -3,16 +3,18 @@
 Final files go to `src/themes/chamba-lab/stickers/` with the id as file name. See
 `design/style-guide.md` for the shared rules.
 
-| Id                                                                       | Method       | Status  | Notes                                                                                                                                                                           |
-| ------------------------------------------------------------------------ | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `rakim-chibi`, `rakim-chibi-wave`, `rakim-chibi-sit`, `rakim-chibi-arms` | Generate     | in repo | Chibi set, 2026-11-25. Temporary: about 460 px sources from a 2x2 grid; regenerate one pose per request at full resolution. Replaced the logo-style `rakim` and `rakim-sleepy`. |
-| `lab-badge`                                                              | SVG (Claude) | in repo |                                                                                                                                                                                 |
-| `coffee`                                                                 | SVG (Claude) | in repo | Redrawn 2026-11-25                                                                                                                                                              |
-| `laptop`                                                                 | SVG (Claude) | in repo |                                                                                                                                                                                 |
-| `git-branch`                                                             | SVG (Claude) | in repo |                                                                                                                                                                                 |
-| `bug`                                                                    | SVG (Claude) | in repo |                                                                                                                                                                                 |
-| `rocket`                                                                 | SVG (Claude) | in repo |                                                                                                                                                                                 |
-| `rakim-peek`                                                             | Generate     | todo    | Rakim peeking up from the bottom edge of the avatar. Full prompt below.                                                                                                         |
+| Id                                                                       | Method       | Status  | Notes                                                                                                                       |
+| ------------------------------------------------------------------------ | ------------ | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `rakim-chibi`, `rakim-chibi-wave`, `rakim-chibi-sit`, `rakim-chibi-arms` | Generate     | in repo | Chibi set, 2026-11-25. Temporary: about 460 px sources from a 2x2 grid; regenerate one pose per request at full resolution. |
+| `rakim`                                                                  | Existing art | in repo | Logo style. From `rakim-pngtuber/sprites/sticker/1-boca-cerrada.png`                                                        |
+| `rakim-sleepy`                                                           | Existing art | in repo | Logo style. From `rakim-pngtuber/sprites/sticker/3-parpadeo-boca-cerrada.png`                                               |
+| `lab-badge`                                                              | SVG (Claude) | in repo |                                                                                                                             |
+| `coffee`                                                                 | SVG (Claude) | in repo | Redrawn 2026-11-25                                                                                                          |
+| `laptop`                                                                 | SVG (Claude) | in repo |                                                                                                                             |
+| `git-branch`                                                             | SVG (Claude) | in repo |                                                                                                                             |
+| `bug`                                                                    | SVG (Claude) | in repo |                                                                                                                             |
+| `rocket`                                                                 | SVG (Claude) | in repo |                                                                                                                             |
+| `rakim-peek`                                                             | Generate     | todo    | Rakim peeking up from the bottom edge of the avatar. Full prompt below.                                                     |
 
 ## rakim-peek
 
