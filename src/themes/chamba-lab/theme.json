@@ -24,25 +24,47 @@
       }
     },
     {
-      "id": "rakim",
-      "name": "Rakim",
-      "src": "stickers/rakim.webp",
+      "id": "rakim-chibi-wave",
+      "name": "Rakim waving",
+      "src": "stickers/rakim-chibi-wave.webp",
       "defaults": {
         "x": 0.8,
-        "y": 0.8,
-        "scale": 0.36,
-        "rotation": -6
+        "y": 0.74,
+        "scale": 0.42,
+        "rotation": 0
       }
     },
     {
-      "id": "rakim-sleepy",
-      "name": "Sleepy Rakim",
-      "src": "stickers/rakim-sleepy.webp",
+      "id": "rakim-chibi",
+      "name": "Rakim",
+      "src": "stickers/rakim-chibi.webp",
       "defaults": {
         "x": 0.8,
-        "y": 0.8,
-        "scale": 0.36,
-        "rotation": -6
+        "y": 0.74,
+        "scale": 0.42,
+        "rotation": 0
+      }
+    },
+    {
+      "id": "rakim-chibi-arms",
+      "name": "Unimpressed Rakim",
+      "src": "stickers/rakim-chibi-arms.webp",
+      "defaults": {
+        "x": 0.8,
+        "y": 0.74,
+        "scale": 0.42,
+        "rotation": 0
+      }
+    },
+    {
+      "id": "rakim-chibi-sit",
+      "name": "Sitting Rakim",
+      "src": "stickers/rakim-chibi-sit.webp",
+      "defaults": {
+        "x": 0.78,
+        "y": 0.78,
+        "scale": 0.4,
+        "rotation": 0
       }
     },
     {
@@ -121,11 +143,13 @@
         "laptop",
         "git-branch",
         "coffee",
-        "rakim",
-        "rakim-sleepy",
         "bug",
         "rocket",
-        "rakim-peek"
+        "rakim-peek",
+        "rakim-chibi-wave",
+        "rakim-chibi",
+        "rakim-chibi-arms",
+        "rakim-chibi-sit"
       ]
     }
   ]
