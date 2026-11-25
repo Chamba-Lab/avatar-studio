@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "chamba-lab",
+  "name": "Chamba Lab",
+  "icon": "icon.svg",
+  "order": 20,
+  "frames": [{ "id": "lab-ring", "name": "Lab ring", "src": "frames/lab-ring.svg" }],
+  "stickers": [
+    {
+      "id": "lab-badge",
+      "name": "LAB badge",
+      "src": "stickers/lab-badge.svg",
+      "defaults": { "x": 0.74, "y": 0.84, "scale": 0.34, "rotation": -8 }
+    },
+    {
+      "id": "laptop",
+      "name": "Laptop",
+      "src": "stickers/laptop.svg",
+      "defaults": { "x": 0.22, "y": 0.8, "scale": 0.3, "rotation": -6 }
+    },
+    {
+      "id": "git-branch",
+      "name": "Git branch",
+      "src": "stickers/git-branch.svg",
+      "defaults": { "x": 0.82, "y": 0.24, "scale": 0.26, "rotation": 8 }
+    },
+    {
+      "id": "coffee",
+      "name": "Coffee",
+      "src": "stickers/coffee.svg",
+      "defaults": { "x": 0.2, "y": 0.3, "scale": 0.26, "rotation": -6 }
+    }
+  ],
+  "credits": [
+    {
+      "author": "Chamba Lab",
+      "assets": ["lab-ring", "lab-badge", "laptop", "git-branch", "coffee"]
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/instrument-sans';
+@import 'tailwindcss';
+
+/* Avatar Studio tokens. Own identity, independent of chambalab.org (decided 2026-11-25). */
+@theme {
+  --color-ink: #121016;
+  --color-ink-deep: #0c0b0f;
+  --color-surface: #1c1922;
+  --color-raised: #27232f;
+  --color-hairline: rgb(255 255 255 / 0.08);
+  --color-text: #f6f1ea;
+  --color-muted: #a59fb0;
+  --color-accent: #f7b696;
+  --color-accent-soft: #fadbc8;
+  --color-on-accent: #1b0b02;
+  --color-confirm: #7ce0c3;
+  --color-on-confirm: #062b20;
+  --color-danger: #ff8a80;
+
+  --font-display: 'Bricolage Grotesque Variable', system-ui, sans-serif;
+  --font-sans: 'Instrument Sans Variable', system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-float: float 6s ease-in-out infinite;
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+  html,
+  body,
+  #root {
+    min-height: 100dvh;
+  }
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

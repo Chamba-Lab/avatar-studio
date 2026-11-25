@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "christmas",
+  "name": "Christmas",
+  "icon": "icon.svg",
+  "order": 10,
+  "season": { "from": "12-01", "to": "01-06" },
+  "frames": [
+    { "id": "wreath", "name": "Wreath", "src": "frames/wreath.webp" },
+    { "id": "lights-ring", "name": "Lights", "src": "frames/lights-ring.svg" }
+  ],
+  "stickers": [
+    {
+      "id": "santa-hat",
+      "name": "Santa hat",
+      "src": "stickers/santa-hat.svg",
+      "defaults": { "x": 0.56, "y": 0.2, "scale": 0.46, "rotation": -12 }
+    },
+    {
+      "id": "reindeer-antlers",
+      "name": "Reindeer antlers",
+      "src": "stickers/reindeer-antlers.webp",
+      "defaults": { "x": 0.5, "y": 0.2, "scale": 0.62, "rotation": 0 }
+    },
+    {
+      "id": "scarf",
+      "name": "Scarf",
+      "src": "stickers/scarf.webp",
+      "defaults": { "x": 0.5, "y": 0.82, "scale": 0.6, "rotation": 0 }
+    },
+    {
+      "id": "sparkles",
+      "name": "Sparkles",
+      "src": "stickers/sparkles.svg",
+      "defaults": { "x": 0.18, "y": 0.3, "scale": 0.24, "rotation": 0 }
+    },
+    {
+      "id": "snowflakes",
+      "name": "Snowflakes",
+      "src": "stickers/snowflakes.svg",
+      "defaults": { "x": 0.82, "y": 0.5, "scale": 0.26, "rotation": 10 }
+    },
+    {
+      "id": "string-lights",
+      "name": "String lights",
+      "src": "stickers/string-lights.svg",
+      "defaults": { "x": 0.5, "y": 0.9, "scale": 0.5, "rotation": 0 }
+    },
+    {
+      "id": "hot-cocoa",
+      "name": "Hot cocoa",
+      "src": "stickers/hot-cocoa.svg",
+      "defaults": { "x": 0.78, "y": 0.78, "scale": 0.28, "rotation": 8 }
+    },
+    {
+      "id": "gift-box",
+      "name": "Gift",
+      "src": "stickers/gift-box.svg",
+      "defaults": { "x": 0.22, "y": 0.78, "scale": 0.28, "rotation": -8 }
+    },
+    {
+      "id": "candy-cane",
+      "name": "Candy cane",
+      "src": "stickers/candy-cane.svg",
+      "defaults": { "x": 0.86, "y": 0.3, "scale": 0.24, "rotation": 14 }
+    },
+    {
+      "id": "mini-tree",
+      "name": "Tree",
+      "src": "stickers/mini-tree.svg",
+      "defaults": { "x": 0.16, "y": 0.56, "scale": 0.26, "rotation": 0 }
+    }
+  ],
+  "credits": [
+    {
+      "author": "Chamba Lab",
+      "assets": [
+        "wreath",
+        "lights-ring",
+        "santa-hat",
+        "reindeer-antlers",
+        "scarf",
+        "sparkles",
+        "snowflakes",
+        "string-lights",
+        "hot-cocoa",
+        "gift-box",
+        "candy-cane",
+        "mini-tree"
+      ]
+    }
+  ]
+}
