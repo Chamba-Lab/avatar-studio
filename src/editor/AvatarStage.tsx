@@ -1,6 +1,7 @@
 import Konva from 'konva';
-import { useCallback, useEffect, useRef, type RefObject } from 'react';
-import { Circle, Image as KonvaImage, Layer, Shape, Stage, Transformer } from 'react-konva';
+import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
+import { Circle, Image as KonvaImage, Layer, Rect, Shape, Stage, Transformer } from 'react-konva';
+import { blurredBackdrop } from '../photo/blurredBackdrop.ts';
 import type { LoadedPhoto } from '../photo/loadPhoto.ts';
 import { assets } from '../themes/catalog.ts';
 import type { Scene, SceneAction, StickerInstance } from './scene.ts';
@@ -99,6 +100,8 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
   const pinch = useRef<Pinch>(null);
   const pinchTarget = useRef<Konva.Node | null>(null);
   const wheelTimer = useRef<number | undefined>(undefined);
+
+  const backdrop = useMemo(() => blurredBackdrop(photo), [photo]);
 
   // Cover-fit: at scale 1 the photo's short side fills the canvas.
   const cover = size / Math.min(photo.width, photo.height);
@@ -202,6 +205,12 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
       onWheel={handleWheel}
     >
       <Layer>
+        {scene.background.kind === 'blur' && (
+          <KonvaImage image={backdrop} width={size} height={size} listening={false} />
+        )}
+        {scene.background.kind === 'color' && (
+          <Rect width={size} height={size} fill={scene.background.color} listening={false} />
+        )}
         <KonvaImage
           ref={photoRef}
           image={photo.canvas}

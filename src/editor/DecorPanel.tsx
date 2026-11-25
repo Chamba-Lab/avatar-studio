@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { assetKey, themes } from '../themes/catalog.ts';
 import type { StickerAsset } from '../themes/types.ts';
 import { Icon } from '../ui/Icon.tsx';
-import { MAX_PHOTO_SCALE, MIN_PHOTO_SCALE, type PhotoTransform } from './scene.ts';
+import { MAX_PHOTO_SCALE, MIN_PHOTO_SCALE, type Background, type PhotoTransform } from './scene.ts';
 
 export type Tab = 'photo' | 'frame' | 'stickers';
 
@@ -11,6 +11,8 @@ type Props = {
   onTab: (tab: Tab) => void;
   frame: string | null;
   photo: PhotoTransform;
+  background: Background;
+  onBackground: (background: Background) => void;
   photoPreview: string;
   onFrame: (key: string | null) => void;
   onSticker: (themeId: string, sticker: StickerAsset) => void;
@@ -25,6 +27,10 @@ const TABS: Array<{ id: Tab; label: string }> = [
   { id: 'frame', label: 'Frame' },
   { id: 'stickers', label: 'Stickers' },
 ];
+
+const SWATCHES = ['#fcf6e8', '#ffffff', '#121016', '#f7b696', '#7ce0c3', '#e53935'];
+const CHECKER =
+  'bg-[conic-gradient(#3a3542_25%,#27232f_0_50%,#3a3542_0_75%,#27232f_0)] [background-size:12px_12px]';
 
 const tileBase =
   'transition-[transform,border-color,background-color] duration-200 ease-out-expo active:scale-95';
@@ -178,6 +184,74 @@ export function DecorPanel(props: Props) {
             ))}
           </div>
           <p className="text-xs text-muted">Drag to move · pinch or scroll to zoom</p>
+
+          <fieldset className="flex flex-col gap-2.5">
+            <legend className="mb-2.5 text-[13px] text-muted">
+              Background{' '}
+              <span className="text-muted/70">· shows where the photo doesn’t reach</span>
+            </legend>
+            <div className="flex flex-wrap items-center gap-2.5">
+              {(() => {
+                const bg = props.background;
+                const ring = (on: boolean) =>
+                  `h-10 w-10 rounded-full border-2 ${tileBase} ${on ? 'border-accent' : 'border-white/12'}`;
+                return (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Blurred photo"
+                      title="Blurred photo"
+                      aria-pressed={bg.kind === 'blur'}
+                      onClick={() => props.onBackground({ kind: 'blur' })}
+                      className={`${ring(bg.kind === 'blur')} overflow-hidden`}
+                    >
+                      <img
+                        src={props.photoPreview}
+                        alt=""
+                        className="h-full w-full scale-150 object-cover blur-[3px]"
+                      />
+                    </button>
+                    {SWATCHES.map((color) => {
+                      const on = bg.kind === 'color' && bg.color === color;
+                      return (
+                        <button
+                          key={color}
+                          type="button"
+                          aria-label={`Color ${color}`}
+                          aria-pressed={on}
+                          onClick={() => props.onBackground({ kind: 'color', color })}
+                          className={ring(on)}
+                          style={{ background: color }}
+                        />
+                      );
+                    })}
+                    <label
+                      title="Custom color"
+                      className={`${ring(bg.kind === 'color' && !SWATCHES.includes(bg.color))} relative cursor-pointer bg-[conic-gradient(#e53935,#f9a825,#7ce0c3,#5b8def,#b8a6ff,#e53935)]`}
+                    >
+                      <span className="sr-only">Custom color</span>
+                      <input
+                        type="color"
+                        value={bg.kind === 'color' ? bg.color : '#fcf6e8'}
+                        onChange={(e) =>
+                          props.onBackground({ kind: 'color', color: e.target.value })
+                        }
+                        className="absolute inset-0 cursor-pointer opacity-0"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      aria-label="Transparent"
+                      title="Transparent"
+                      aria-pressed={bg.kind === 'transparent'}
+                      onClick={() => props.onBackground({ kind: 'transparent' })}
+                      className={`${ring(bg.kind === 'transparent')} ${CHECKER}`}
+                    />
+                  </>
+                );
+              })()}
+            </div>
+          </fieldset>
         </div>
       )}
     </div>

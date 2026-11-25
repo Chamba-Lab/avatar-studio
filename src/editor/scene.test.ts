@@ -6,6 +6,7 @@ import {
   historyReducer,
   MAX_PHOTO_SCALE,
   MAX_STICKER_SCALE,
+  MIN_PHOTO_SCALE,
 } from './scene.ts';
 
 const hat = { x: 0.5, y: 0.2, scale: 0.4, rotation: -10 };
@@ -60,6 +61,22 @@ describe('applyAction', () => {
     scene = applyAction({ ...scene, frame: 'christmas/wreath' }, { type: 'clear' });
     expect(scene.frame).toBeNull();
     expect(scene.photo.x).toBe(0.3);
+  });
+});
+
+describe('background', () => {
+  it('defaults to a blurred photo and can be changed', () => {
+    expect(emptyScene().background).toEqual({ kind: 'blur' });
+    const scene = applyAction(emptyScene(), {
+      type: 'setBackground',
+      background: { kind: 'color', color: '#fcf6e8' },
+    });
+    expect(scene.background).toEqual({ kind: 'color', color: '#fcf6e8' });
+  });
+
+  it('lets the photo zoom out below cover, down to the minimum', () => {
+    const scene = applyAction(emptyScene(), { type: 'updatePhoto', patch: { scale: 0.1 } });
+    expect(scene.photo.scale).toBe(MIN_PHOTO_SCALE);
   });
 });
 

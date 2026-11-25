@@ -200,7 +200,14 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
           className="relative flex min-h-0 flex-1 touch-none items-center justify-center bg-[radial-gradient(rgb(255_255_255/0.07)_1px,transparent_1px)] [background-size:18px_18px] p-3 select-none lg:p-8"
         >
           {size > 0 && (
-            <div style={{ width: size, height: size }} className="relative">
+            <div
+              style={{ width: size, height: size }}
+              className={`relative ${
+                scene.background.kind === 'transparent'
+                  ? 'bg-[conic-gradient(#3a3542_25%,#27232f_0_50%,#3a3542_0_75%,#27232f_0)] [background-size:20px_20px]'
+                  : ''
+              }`}
+            >
               <AvatarStage
                 size={size}
                 photo={photo}
@@ -235,6 +242,8 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
           onTab={setTab}
           frame={scene.frame}
           photo={scene.photo}
+          background={scene.background}
+          onBackground={(background) => commit({ type: 'setBackground', background })}
           photoPreview={photoPreview}
           onFrame={(frame) => commit({ type: 'setFrame', frame })}
           onSticker={(themeId, s) => {

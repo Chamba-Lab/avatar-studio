@@ -14,9 +14,14 @@ export type StickerInstance = Placement & {
   flipX: boolean;
 };
 
+/** What fills the canvas where the photo does not reach (after zooming out or moving it). */
+export type Background =
+  { kind: 'blur' } | { kind: 'color'; color: string } | { kind: 'transparent' };
+
 export type Scene = {
   version: 1;
   photo: PhotoTransform;
+  background: Background;
   frame: string | null;
   /** Array order is z-order: the last one is on top. */
   stickers: StickerInstance[];
@@ -25,12 +30,14 @@ export type Scene = {
 export const PHOTO_FIT: PhotoTransform = { x: 0.5, y: 0.5, scale: 1, rotation: 0 };
 export const MIN_STICKER_SCALE = 0.08;
 export const MAX_STICKER_SCALE = 1.5;
-export const MIN_PHOTO_SCALE = 1;
+/** Below 1 the photo no longer covers the canvas and the background shows. */
+export const MIN_PHOTO_SCALE = 0.4;
 export const MAX_PHOTO_SCALE = 4;
 
 export const emptyScene = (): Scene => ({
   version: 1,
   photo: { ...PHOTO_FIT },
+  background: { kind: 'blur' },
   frame: null,
   stickers: [],
 });
@@ -46,6 +53,7 @@ export type SceneAction =
   | { type: 'flipSticker'; uid: string }
   | { type: 'bringToFront'; uid: string }
   | { type: 'setFrame'; frame: string | null }
+  | { type: 'setBackground'; background: Background }
   | { type: 'updatePhoto'; patch: Partial<PhotoTransform> }
   | { type: 'resetPhoto' }
   | { type: 'clear' };
@@ -99,6 +107,8 @@ export function applyAction(scene: Scene, action: SceneAction): Scene {
     }
     case 'setFrame':
       return { ...scene, frame: action.frame };
+    case 'setBackground':
+      return { ...scene, background: action.background };
     case 'updatePhoto': {
       const next = { ...scene.photo, ...action.patch };
       return {
@@ -114,7 +124,7 @@ export function applyAction(scene: Scene, action: SceneAction): Scene {
     case 'resetPhoto':
       return { ...scene, photo: { ...PHOTO_FIT } };
     case 'clear':
-      return { ...emptyScene(), photo: scene.photo };
+      return { ...emptyScene(), photo: scene.photo, background: scene.background };
   }
 }
 
