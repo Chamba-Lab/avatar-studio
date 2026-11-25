@@ -5,6 +5,7 @@ import { themes } from '../themes/catalog';
 
 type Props = {
   onPhoto: (file: File) => void;
+  onDemo: () => void;
 };
 
 const frameOf = (themeId: string, frameId: string) =>
@@ -33,7 +34,7 @@ function ShowcaseCard({
   );
 }
 
-export function StartScreen({ onPhoto }: Props) {
+export function StartScreen({ onPhoto, onDemo }: Props) {
   const galleryInput = useRef<HTMLInputElement>(null);
   const cameraInput = useRef<HTMLInputElement>(null);
 
@@ -139,6 +140,13 @@ export function StartScreen({ onPhoto }: Props) {
               </svg>
             </button>
           </div>
+          <button
+            type="button"
+            onClick={onDemo}
+            className="self-center py-1.5 text-sm font-semibold text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent lg:self-start"
+          >
+            or try it with Rakim
+          </button>
           <p className="flex items-center gap-2 self-center text-[13px] text-muted lg:self-start">
             <span className="h-2 w-2 rounded-full bg-confirm" />
             Your photo never leaves your device

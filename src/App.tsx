@@ -8,6 +8,7 @@ import {
 } from './photo/loadPhoto.ts';
 import { SaveScreen } from './screens/SaveScreen.tsx';
 import { StartScreen } from './screens/StartScreen.tsx';
+import demoPhotoUrl from './assets/demo/rakim-demo.webp';
 import { LoadingScreen, PhotoErrorScreen } from './screens/StatusScreens.tsx';
 
 // Konva and the editor load only once a photo is chosen, keeping the start screen light.
@@ -29,19 +30,31 @@ export default function App() {
   const [scene, setScene] = useState<Scene>(emptyScene);
   const replaceInput = useRef<HTMLInputElement>(null);
 
-  const openPhoto = async (file: File, keepScene = false) => {
+  const openPhoto = async (file: File, keepScene = false, startScene?: Scene) => {
     setView({ name: 'loading' });
     // Start fetching the editor while the photo decodes.
     void import('./editor/EditorScreen.tsx');
     try {
       const loaded = await loadPhoto(file);
       setPhoto(loaded);
-      if (!keepScene) setScene(emptyScene());
+      if (startScene) setScene(startScene);
+      else if (!keepScene) setScene(emptyScene());
       else setScene((s) => ({ ...s, photo: emptyScene().photo }));
       setView({ name: 'editor' });
     } catch (e) {
       setView({ name: 'error', reason: e instanceof PhotoError ? e.reason : 'decode-failed' });
     }
+  };
+
+  /** Sample transparent photo, so people can explore without uploading anything. */
+  const openDemo = async () => {
+    const blob = await (await fetch(demoPhotoUrl)).blob();
+    const file = new File([blob], 'rakim.webp', { type: blob.type || 'image/webp' });
+    // A solid color shows off the background option, which a blur barely changes on a cut-out.
+    await openPhoto(file, false, {
+      ...emptyScene(),
+      background: { kind: 'color', color: '#f7b696' },
+    });
   };
 
   const startOver = () => {
@@ -52,7 +65,9 @@ export default function App() {
 
   return (
     <>
-      {view.name === 'start' && <StartScreen onPhoto={(f) => void openPhoto(f)} />}
+      {view.name === 'start' && (
+        <StartScreen onPhoto={(f) => void openPhoto(f)} onDemo={() => void openDemo()} />
+      )}
       {view.name === 'loading' && <LoadingScreen />}
       {view.name === 'error' && <PhotoErrorScreen reason={view.reason} onRetry={startOver} />}
       {view.name === 'editor' && photo && (
