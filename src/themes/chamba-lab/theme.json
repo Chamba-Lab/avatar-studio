@@ -13,6 +13,17 @@
   ],
   "stickers": [
     {
+      "id": "rakim-peek",
+      "name": "Peeking Rakim",
+      "src": "stickers/rakim-peek.webp",
+      "defaults": {
+        "x": 0.5,
+        "y": 0.84,
+        "scale": 0.55,
+        "rotation": 0
+      }
+    },
+    {
       "id": "rakim",
       "name": "Rakim",
       "src": "stickers/rakim.webp",
@@ -113,7 +124,8 @@
         "rakim",
         "rakim-sleepy",
         "bug",
-        "rocket"
+        "rocket",
+        "rakim-peek"
       ]
     }
   ]

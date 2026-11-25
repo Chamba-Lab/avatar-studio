@@ -26,3 +26,34 @@ Style: match the reference exactly: bold black fur shapes with cream highlights,
 Composition: centered horizontally, filling about 80% of the width of a square 1024x1024 canvas, the straight cut at about 75% of the height.
 Background: fully transparent. If transparency is not possible, a solid flat magenta #FF00FF background with nothing else on it.
 ```
+
+## Chibi Rakim set (direction chosen 2026-11-25)
+
+Rakim stickers move to a chibi "keychain charm" style, closer to the 3D Rakim than to the logo. Once
+the set exists, the logo-style `rakim` and `rakim-sleepy` stickers are replaced so only one Rakim
+style ships. Generate **one pose per request** so each image comes out at full resolution (a 2x2 grid
+leaves each sticker at about 500 px).
+
+Attach two references: `rakim-studio/assets/rakim/rakim-saluda-recorte.webp` (the character) and
+`src/themes/chamba-lab/stickers/rakim-peek.webp` (the line and color style).
+
+Base prompt (replace `[POSE]` with one line from the table):
+
+```
+Generate 4 different variations (separate images).
+Create a single chibi sticker of the attached raccoon character, Rakim, in the style of a cute acrylic keychain charm: oversized round head (about 60% of the height), tiny soft body, short stubby limbs, sleepy half-closed eyes with an unimpressed look, small black nose. Keep his identity from the reference: dark slate-grey fur, cream face mask and eyebrow band, dark eye patches, cream-tipped pointed ears, striped tail.
+Pose: [POSE]
+Style: clean vector-like illustration matching the second reference: simple shapes, a thin dark outline (#111111) inside, flat colors with one soft cel shade, a subtle glossy highlight like acrylic, and a thick golden-yellow (#F2B21B) sticker border around the whole silhouette. No gradients on the background, no text, no drop shadow, no realistic fur.
+Composition: one character centered, filling about 85% of a square 1024x1024 canvas.
+Background: fully transparent. If transparency is not possible, a solid flat magenta #FF00FF background with nothing else on it.
+```
+
+| Id                   | [POSE]                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| `rakim-chibi-wave`   | standing, waving with one paw, the other paw relaxed                                          |
+| `rakim-chibi-coffee` | holding a big cream coffee mug with both paws, a little steam above it                        |
+| `rakim-chibi-laptop` | sitting cross-legged typing on a tiny laptop, unbothered                                      |
+| `rakim-chibi-sleep`  | curled up asleep, tail wrapped around, a small "z" bubble drawn as a shape, not text          |
+| `rakim-chibi-ok`     | giving a thumbs-up (paw) with a tiny smirk                                                    |
+| `rakim-chibi-santa`  | standing in a small Santa hat and red scarf, holding a candy cane (for the Christmas theme)   |
+| `rakim-peek`         | peeking up from below: only the head and two paws gripping a straight bottom edge are visible |
