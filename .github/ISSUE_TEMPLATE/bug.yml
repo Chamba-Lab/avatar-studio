@@ -1,0 +1,37 @@
+name: Report a bug
+description: Something in Avatar Studio does not work as it should.
+title: 'fix: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: Please do not attach your personal photo. A screenshot of the problem is enough.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Describe the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the editor with the Rakim sample
+        2. Add the Santa hat
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Browser and device
+      placeholder: Chrome on Android, Safari on iPhone, Discord's in-app browser...
+    validations:
+      required: true
+  - type: textarea
+    id: shots
+    attributes:
+      label: Screenshots or recording
+      description: Drag images here if they help.

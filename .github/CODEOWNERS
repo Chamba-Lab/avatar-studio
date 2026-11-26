@@ -1,0 +1,3 @@
+# Reviews are requested from the Admins team on every pull request.
+# Required approval is set by the master ruleset, not by this file.
+* @Chamba-Lab/admins

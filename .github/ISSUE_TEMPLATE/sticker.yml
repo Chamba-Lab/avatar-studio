@@ -1,0 +1,51 @@
+name: Propose a sticker, frame or theme
+description: Suggest new art for Avatar Studio, or offer to make it.
+title: 'feat(themes): '
+labels: ['enhancement']
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What are you proposing?
+      options:
+        - A sticker for an existing theme
+        - A frame for an existing theme
+        - A new theme
+    validations:
+      required: true
+  - type: input
+    id: theme
+    attributes:
+      label: Theme
+      description: Existing theme (Christmas, New Year, Chamba Lab) or the name of the new one.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What it shows and why people would want it. For a new theme, list a few stickers and when it is in season.
+    validations:
+      required: true
+  - type: dropdown
+    id: making
+    attributes:
+      label: Will you make the art?
+      options:
+        - Yes, I will open a pull request
+        - I can make it but need help adding it
+        - No, it is just an idea
+    validations:
+      required: true
+  - type: textarea
+    id: refs
+    attributes:
+      label: Sketches or references
+      description: Optional. Drafts or references help; do not post art you have no rights to.
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Rights
+      options:
+        - label: If I contribute art, I made it (or may submit it) and I assign its rights to Chamba Lab, as described in LICENSE-ASSETS.md.
+          required: true

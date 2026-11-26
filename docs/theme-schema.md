@@ -39,7 +39,7 @@ Themes are discovered at build time with `import.meta.glob("/src/themes/*/theme.
   "name": "Christmas", // short UI label (English)
   "icon": "icon.svg", // theme tab icon, relative to the folder
   "order": 10, // tab order, lower first
-  "season": { "from": "12-01", "to": "01-06" }, // optional: listed first in this window; never hidden
+  "season": { "from": "12-01", "to": "12-25" }, // optional: listed first in this window; never hidden
   "frames": [{ "id": "wreath", "name": "Wreath", "src": "frames/wreath.webp" }],
   "stickers": [
     {
