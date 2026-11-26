@@ -1,5 +1,10 @@
 import { lazy, Suspense, useRef, useState } from 'react';
-import { emptyScene, type Scene } from './editor/scene.ts';
+import {
+  createHistory,
+  emptyScene,
+  type History as SceneHistory,
+  type Scene,
+} from './editor/scene.ts';
 import {
   loadPhoto,
   PhotoError,
@@ -10,6 +15,7 @@ import { SaveScreen } from './screens/SaveScreen.tsx';
 import { StartScreen } from './screens/StartScreen.tsx';
 import demoPhotoUrl from './assets/demo/rakim-demo.webp';
 import { LoadingScreen, PhotoErrorScreen } from './screens/StatusScreens.tsx';
+import { color } from './ui/tokens.ts';
 
 // Konva and the editor load only once a photo is chosen, keeping the start screen light.
 const EditorScreen = lazy(() =>
@@ -26,8 +32,9 @@ type View =
 export default function App() {
   const [view, setView] = useState<View>({ name: 'start' });
   const [photo, setPhoto] = useState<LoadedPhoto | null>(null);
-  // Kept across editor ↔ save and photo replacement, so nothing is lost going back.
-  const [scene, setScene] = useState<Scene>(emptyScene);
+  // The whole undo history survives editor ↔ save, so going back loses nothing. A new photo
+  // starts a fresh history; a replaced photo keeps the decorations.
+  const [history, setHistory] = useState<SceneHistory>(() => createHistory(emptyScene()));
   const replaceInput = useRef<HTMLInputElement>(null);
 
   const openPhoto = async (file: File, keepScene = false, startScene?: Scene) => {
@@ -37,9 +44,11 @@ export default function App() {
     try {
       const loaded = await loadPhoto(file);
       setPhoto(loaded);
-      if (startScene) setScene(startScene);
-      else if (!keepScene) setScene(emptyScene());
-      else setScene((s) => ({ ...s, photo: emptyScene().photo }));
+      setHistory((h) =>
+        createHistory(
+          startScene ?? (keepScene ? { ...h.present, photo: emptyScene().photo } : emptyScene()),
+        ),
+      );
       setView({ name: 'editor' });
     } catch (e) {
       setView({ name: 'error', reason: e instanceof PhotoError ? e.reason : 'decode-failed' });
@@ -48,18 +57,27 @@ export default function App() {
 
   /** Sample transparent photo, so people can explore without uploading anything. */
   const openDemo = async () => {
-    const blob = await (await fetch(demoPhotoUrl)).blob();
+    let blob: Blob;
+    try {
+      const res = await fetch(demoPhotoUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      blob = await res.blob();
+    } catch {
+      // Offline, or a new deploy replaced the file since this page loaded.
+      setView({ name: 'error', reason: 'decode-failed' });
+      return;
+    }
     const file = new File([blob], 'rakim.webp', { type: blob.type || 'image/webp' });
     // A solid color shows off the background option, which a blur barely changes on a cut-out.
     await openPhoto(file, false, {
       ...emptyScene(),
-      background: { kind: 'color', color: '#f7b696' },
+      background: { kind: 'color', color: color.accent },
     });
   };
 
   const startOver = () => {
     setPhoto(null);
-    setScene(emptyScene());
+    setHistory(createHistory(emptyScene()));
     setView({ name: 'start' });
   };
 
@@ -76,11 +94,11 @@ export default function App() {
             // Remount when the photo changes so the history starts from the new photo.
             key={photo.id}
             photo={photo}
-            initialScene={scene}
+            initialHistory={history}
             onClose={startOver}
             onReplacePhoto={() => replaceInput.current?.click()}
             onSaved={(png, latest) => {
-              setScene(latest);
+              setHistory(latest);
               setView({ name: 'save', png });
             }}
           />

@@ -169,6 +169,27 @@ export function copyToRemove(
   return (copies.find((s) => s.uid === selected) ?? copies.at(-1))?.uid ?? null;
 }
 
+/**
+ * What a tap on a sticker tile does. Tiles toggle: if that sticker is already on the avatar, the
+ * tap removes a copy (see `copyToRemove`); otherwise it adds one at a free spot, and `select`
+ * names the new sticker.
+ * Extra copies come from Duplicate on the selected sticker, not from tapping the tile again.
+ */
+export function stickerTileTap(
+  scene: Scene,
+  ref: string,
+  selected: string | null,
+  defaults: Placement,
+  newUid: string,
+): { action: SceneAction; select?: string } {
+  const existing = copyToRemove(scene.stickers, ref, selected);
+  if (existing) return { action: { type: 'removeSticker', uid: existing } };
+  return {
+    action: { type: 'addSticker', uid: newUid, ref, placement: freeSpot(scene.stickers, defaults) },
+    select: newUid,
+  };
+}
+
 /** Undo history. Every committed action is one step; `preview` changes the present without one. */
 export type History = { past: Scene[]; present: Scene; future: Scene[] };
 

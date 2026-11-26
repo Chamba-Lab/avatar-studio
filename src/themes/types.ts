@@ -32,5 +32,8 @@ export type ThemeData = {
   credits: Array<{ author: string; assets: string[] }>;
 };
 
-/** A theme with every asset path resolved to a URL the browser can load. */
-export type Theme = Omit<ThemeData, 'icon'> & { iconUrl: string };
+/** A theme with every asset path resolved to a URL the browser can load, and defaults filled in. */
+export type Theme = Omit<ThemeData, 'icon' | 'stickers'> & {
+  iconUrl: string;
+  stickers: Array<StickerAsset & { defaults: Placement }>;
+};

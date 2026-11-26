@@ -7,15 +7,14 @@ import { assets } from '../themes/catalog.ts';
 import type { Scene, SceneAction, StickerInstance } from './scene.ts';
 import { HELPER } from './exportAvatar.ts';
 import { useImage } from './useImage.ts';
+import { prefersCoarsePointer, prefersReducedMotion } from '../ui/media.ts';
+import { color } from '../ui/tokens.ts';
+import type { Placement } from '../themes/types.ts';
 
 // Keep touch events flowing while a node is being dragged, so a second finger can start a pinch.
 Konva.hitOnDragEnabled = true;
 
-const ACCENT = '#f7b696';
-const coarsePointer =
-  typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
-const reducedMotion = () =>
-  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const coarsePointer = prefersCoarsePointer();
 
 type Props = {
   size: number;
@@ -28,6 +27,14 @@ type Props = {
 };
 
 type Pinch = { dist: number; angle: number; center: { x: number; y: number } } | null;
+
+/** A node's current position, size and turn, back in normalized scene units. */
+const placementOf = (node: Konva.Node, size: number): Placement => ({
+  x: node.x() / size,
+  y: node.y() / size,
+  scale: Math.abs(node.scaleY()),
+  rotation: node.rotation(),
+});
 
 const touchPoint = (stage: Konva.Stage, t: Touch) => {
   const rect = stage.container().getBoundingClientRect();
@@ -56,7 +63,7 @@ function StickerNode({
   // Pop in when the sticker first appears: a small overshoot reads as "placed".
   useEffect(() => {
     const node = nodeRef.current;
-    if (!image || !node || reducedMotion()) return;
+    if (!image || !node || prefersReducedMotion()) return;
     const sx = node.scaleX();
     const sy = node.scaleY();
     node.scale({ x: sx * 0.6, y: sy * 0.6 });
@@ -81,16 +88,7 @@ function StickerNode({
   const height = (size * image.naturalHeight) / image.naturalWidth;
 
   const commitFromNode = (node: Konva.Node) =>
-    onCommit({
-      type: 'updateSticker',
-      uid: sticker.uid,
-      patch: {
-        x: node.x() / size,
-        y: node.y() / size,
-        scale: Math.abs(node.scaleY()),
-        rotation: node.rotation(),
-      },
-    });
+    onCommit({ type: 'updateSticker', uid: sticker.uid, patch: placementOf(node, size) });
 
   return (
     <KonvaImage
@@ -152,12 +150,7 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
     (selected && stageRef.current?.findOne(`#${selected}`)) || photoRef.current;
 
   const commitNode = (node: Konva.Node) => {
-    const patch = {
-      x: node.x() / size,
-      y: node.y() / size,
-      scale: Math.abs(node.scaleY()),
-      rotation: node.rotation(),
-    };
+    const patch = placementOf(node, size);
     if (node === photoRef.current) onCommit({ type: 'updatePhoto', patch });
     else onCommit({ type: 'updateSticker', uid: node.id(), patch });
   };
@@ -297,10 +290,10 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
           enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
           anchorSize={coarsePointer ? 22 : 12}
           anchorCornerRadius={11}
-          anchorStroke={ACCENT}
+          anchorStroke={color.accent}
           anchorStrokeWidth={2}
-          anchorFill="#f6f1ea"
-          borderStroke={ACCENT}
+          anchorFill={color.text}
+          borderStroke={color.accent}
           borderDash={[6, 4]}
           rotateAnchorOffset={coarsePointer ? 34 : 26}
           padding={6}
