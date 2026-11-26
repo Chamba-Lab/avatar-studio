@@ -1,14 +1,23 @@
 import type Konva from 'konva';
-import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
+import {
+  useEffect,
+  useEffectEvent,
+  useLayoutEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import type { LoadedPhoto } from '../photo/loadPhoto.ts';
 import { assetKey } from '../themes/catalog.ts';
-import { Icon, type IconName } from '../ui/Icon.tsx';
+import { Icon } from '../ui/Icon.tsx';
 import { AvatarStage } from './AvatarStage.tsx';
 import { exportAvatar } from './exportAvatar.ts';
 import { DecorPanel, type Tab } from './DecorPanel.tsx';
 import { FirstUseGuide } from './FirstUseGuide.tsx';
+import { StickerToolbar } from './StickerToolbar.tsx';
 import { useFirstUseGuide } from './useFirstUseGuide.ts';
-import { copyToRemove, freeSpot, historyReducer, type History, type SceneAction } from './scene.ts';
+import { historyReducer, stickerTileTap, type History, type SceneAction } from './scene.ts';
 
 type Props = {
   photo: LoadedPhoto;
@@ -37,38 +46,6 @@ function useSquareSize(ref: React.RefObject<HTMLElement | null>, max: number) {
   return size;
 }
 
-function ActionButton({
-  icon,
-  label,
-  onClick,
-  tone = 'default',
-  disabled = false,
-}: {
-  icon: IconName;
-  label: string;
-  onClick: () => void;
-  tone?: 'default' | 'danger' | 'confirm';
-  disabled?: boolean;
-}) {
-  const tones = {
-    default: 'text-text hover:bg-white/6',
-    danger: 'text-danger hover:bg-danger/10',
-    confirm: 'bg-confirm text-on-confirm',
-  };
-  return (
-    <button
-      type="button"
-      aria-label={label}
-      title={label}
-      onClick={onClick}
-      disabled={disabled}
-      className={`flex h-10 w-11 items-center justify-center rounded-[13px] transition-[transform,opacity] duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${tones[tone]}`}
-    >
-      <Icon name={icon} size={19} />
-    </button>
-  );
-}
-
 export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, onSaved }: Props) {
   const [history, dispatch] = useReducer(historyReducer, initialHistory);
   const scene = history.present;
@@ -95,21 +72,23 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
   const selectedRef = scene.stickers.find((s) => s.uid === selected)?.ref ?? null;
   const photoPreview = useMemo(() => photo.canvas.toDataURL('image/jpeg', 0.6), [photo]);
 
+  // Keyboard shortcuts: undo/redo, delete the selected sticker, Escape to deselect.
+  // An effect event reads the latest selection without re-subscribing on every render.
+  const onKey = useEffectEvent((e: KeyboardEvent) => {
+    const mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key.toLowerCase() === 'z') {
+      e.preventDefault();
+      dispatch({ type: e.shiftKey ? 'redo' : 'undo' });
+    } else if (selected && (e.key === 'Delete' || e.key === 'Backspace')) {
+      commit({ type: 'removeSticker', uid: selected });
+    } else if (e.key === 'Escape') {
+      setSelected(null);
+    }
+  });
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.key.toLowerCase() === 'z') {
-        e.preventDefault();
-        dispatch({ type: e.shiftKey ? 'redo' : 'undo' });
-      } else if (selected && (e.key === 'Delete' || e.key === 'Backspace')) {
-        commit({ type: 'removeSticker', uid: selected });
-      } else if (e.key === 'Escape') {
-        setSelected(null);
-      }
-    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  });
+  }, []);
 
   const save = async () => {
     if (!stageRef.current || saving) return;
@@ -125,40 +104,18 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
   };
 
   const selectedActions = selected && (
-    <div
-      role="toolbar"
-      aria-label="Sticker actions"
-      className="flex animate-[pop-in_260ms_var(--ease-out-expo)_both] gap-1 rounded-[18px] border border-white/10 bg-raised p-1.5 shadow-[0_12px_30px_rgb(0_0_0/0.4)]"
-    >
-      <ActionButton
-        icon="flip"
-        label="Flip"
-        onClick={() => commit({ type: 'flipSticker', uid: selected })}
-      />
-      <ActionButton
-        icon="front"
-        label="Bring to front"
-        // Already the top layer: nothing would change, so say so instead of doing nothing.
-        disabled={scene.stickers.at(-1)?.uid === selected}
-        onClick={() => commit({ type: 'bringToFront', uid: selected })}
-      />
-      <ActionButton
-        icon="duplicate"
-        label="Duplicate"
-        onClick={() => {
-          const uid = newUid();
-          commit({ type: 'duplicateSticker', uid: selected, newUid: uid });
-          setSelected(uid);
-        }}
-      />
-      <ActionButton
-        icon="trash"
-        label="Delete"
-        tone="danger"
-        onClick={() => commit({ type: 'removeSticker', uid: selected })}
-      />
-      <ActionButton icon="check" label="Done" tone="confirm" onClick={() => setSelected(null)} />
-    </div>
+    <StickerToolbar
+      onTop={scene.stickers.at(-1)?.uid === selected}
+      onFlip={() => commit({ type: 'flipSticker', uid: selected })}
+      onFront={() => commit({ type: 'bringToFront', uid: selected })}
+      onDuplicate={() => {
+        const uid = newUid();
+        commit({ type: 'duplicateSticker', uid: selected, newUid: uid });
+        setSelected(uid);
+      }}
+      onDelete={() => commit({ type: 'removeSticker', uid: selected })}
+      onDone={() => setSelected(null)}
+    />
   );
 
   const hint =
@@ -265,25 +222,15 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
           stickerUsage={stickerUsage}
           selectedRef={selectedRef}
           onSticker={(themeId, s) => {
-            const ref = assetKey(themeId, s.id);
-            // A tile toggles: a second tap takes that sticker off instead of stacking another.
-            // Extra copies come from Duplicate on the selected sticker.
-            const existing = copyToRemove(scene.stickers, ref, selected);
-            if (existing) {
-              commit({ type: 'removeSticker', uid: existing });
-              return;
-            }
-            const uid = newUid();
-            commit({
-              type: 'addSticker',
-              uid,
-              ref,
-              placement: freeSpot(
-                scene.stickers,
-                s.defaults ?? { x: 0.5, y: 0.5, scale: 0.4, rotation: 0 },
-              ),
-            });
-            setSelected(uid);
+            const tap = stickerTileTap(
+              scene,
+              assetKey(themeId, s.id),
+              selected,
+              s.defaults,
+              newUid(),
+            );
+            commit(tap.action);
+            if (tap.select) setSelected(tap.select);
           }}
           onPhotoScale={(scale) => commit({ type: 'updatePhoto', patch: { scale } })}
           onRotatePhoto={() =>

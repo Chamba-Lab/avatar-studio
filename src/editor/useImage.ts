@@ -15,6 +15,8 @@ export function useImage(src: string | undefined): HTMLImageElement | null {
       cache.set(src, img);
       if (!cancelled) setLoaded({ src, img });
     };
+    // A missing asset leaves that one node out instead of breaking the editor.
+    img.onerror = () => console.warn(`Could not load image: ${src}`);
     img.src = src;
     return () => {
       cancelled = true;

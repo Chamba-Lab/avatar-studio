@@ -1,6 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
-
-const isTouch = () => typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
+import { prefersCoarsePointer } from '../ui/media.ts';
 
 /** One fingertip: a solid dot with a soft halo, like a touch indicator in a screen recording. */
 function Touch({ className }: { className: string }) {
@@ -104,7 +103,7 @@ function useRect(ref: RefObject<HTMLElement | null>) {
  * small to share), with the step being shown lit up. Any tap closes it.
  */
 export function FirstUseGuide({ stage, onDone }: Props) {
-  const [touch] = useState(isTouch);
+  const [touch] = useState(prefersCoarsePointer);
   const rect = useRect(stage);
   const demo = rect ? Math.min(240, Math.min(rect.width, rect.height) * 0.62) : 0;
   const [leaving, setLeaving] = useState(false);

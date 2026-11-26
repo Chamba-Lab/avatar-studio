@@ -9,6 +9,7 @@ import {
   MAX_PHOTO_SCALE,
   MAX_STICKER_SCALE,
   MIN_PHOTO_SCALE,
+  stickerTileTap,
 } from './scene.ts';
 
 const hat = { x: 0.5, y: 0.2, scale: 0.4, rotation: -10 };
@@ -185,5 +186,21 @@ describe('copyToRemove', () => {
   it('removes the selected copy when it is that sticker', () => {
     expect(copyToRemove(stickers, 'hat', 'a')).toBe('a');
     expect(copyToRemove(stickers, 'hat', 'b')).toBe('c');
+  });
+});
+
+describe('stickerTileTap', () => {
+  it('adds the sticker at a free spot and selects it', () => {
+    const tap = stickerTileTap(withHat(), 'christmas/scarf', null, hat, 'n');
+    expect(tap.select).toBe('n');
+    expect(tap.action).toMatchObject({ type: 'addSticker', uid: 'n', ref: 'christmas/scarf' });
+    // The default spot (and its mirror, the same at the center) is taken by the hat: it steps aside.
+    expect(tap.action).toMatchObject({ placement: { x: 0.74, y: 0.2 } });
+  });
+
+  it('removes the sticker when it is already on the avatar, keeping the selection', () => {
+    const tap = stickerTileTap(withHat(), 'christmas/santa-hat', null, hat, 'n');
+    expect(tap.action).toEqual({ type: 'removeSticker', uid: 'a' });
+    expect(tap.select).toBeUndefined();
   });
 });

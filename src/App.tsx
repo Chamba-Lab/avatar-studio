@@ -15,6 +15,7 @@ import { SaveScreen } from './screens/SaveScreen.tsx';
 import { StartScreen } from './screens/StartScreen.tsx';
 import demoPhotoUrl from './assets/demo/rakim-demo.webp';
 import { LoadingScreen, PhotoErrorScreen } from './screens/StatusScreens.tsx';
+import { color } from './ui/tokens.ts';
 
 // Konva and the editor load only once a photo is chosen, keeping the start screen light.
 const EditorScreen = lazy(() =>
@@ -56,12 +57,21 @@ export default function App() {
 
   /** Sample transparent photo, so people can explore without uploading anything. */
   const openDemo = async () => {
-    const blob = await (await fetch(demoPhotoUrl)).blob();
+    let blob: Blob;
+    try {
+      const res = await fetch(demoPhotoUrl);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      blob = await res.blob();
+    } catch {
+      // Offline, or a new deploy replaced the file since this page loaded.
+      setView({ name: 'error', reason: 'decode-failed' });
+      return;
+    }
     const file = new File([blob], 'rakim.webp', { type: blob.type || 'image/webp' });
     // A solid color shows off the background option, which a blur barely changes on a cut-out.
     await openPhoto(file, false, {
       ...emptyScene(),
-      background: { kind: 'color', color: '#f7b696' },
+      background: { kind: 'color', color: color.accent },
     });
   };
 
