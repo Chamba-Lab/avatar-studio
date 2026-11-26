@@ -4,7 +4,7 @@
   "name": "Christmas",
   "icon": "icon.svg",
   "order": 10,
-  "season": { "from": "12-01", "to": "01-06" },
+  "season": { "from": "12-01", "to": "12-25" },
   "frames": [
     { "id": "wreath", "name": "Wreath", "src": "frames/wreath.webp" },
     { "id": "lights-ring", "name": "Lights", "src": "frames/lights-ring.svg" }
