@@ -104,6 +104,230 @@
   }
 }
 
+/* First-use guide: one 4.8 s loop, step 1 (drag) then step 2 (pinch or corner), with the
+   matching step number lit while its gesture plays. */
+@keyframes guide-in {
+  from {
+    opacity: 0;
+  }
+}
+.guide-demo {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.guide-demo * {
+  animation-duration: 4.8s;
+  animation-iteration-count: infinite;
+  animation-timing-function: var(--ease-out-expo);
+}
+.guide-drag {
+  animation-name: guide-drag;
+}
+@keyframes guide-drag {
+  0% {
+    transform: translate(66px, 100px) scale(0.6);
+    opacity: 0;
+  }
+  6% {
+    transform: translate(66px, 100px) scale(1);
+    opacity: 1;
+  }
+  38% {
+    transform: translate(134px, 100px) scale(1);
+    opacity: 1;
+  }
+  44%,
+  100% {
+    transform: translate(134px, 100px) scale(0.6);
+    opacity: 0;
+  }
+}
+.guide-trail {
+  animation-name: guide-trail;
+}
+@keyframes guide-trail {
+  0%,
+  4% {
+    opacity: 0;
+  }
+  12%,
+  36% {
+    opacity: 0.55;
+  }
+  44%,
+  100% {
+    opacity: 0;
+  }
+}
+.guide-pinch-a {
+  animation-name: guide-pinch-a;
+}
+.guide-pinch-b {
+  animation-name: guide-pinch-b;
+}
+@keyframes guide-pinch-a {
+  0%,
+  48% {
+    transform: translate(100px, 100px) rotate(-45deg) translateX(-14px);
+    opacity: 0;
+  }
+  54% {
+    transform: translate(100px, 100px) rotate(-45deg) translateX(-14px);
+    opacity: 1;
+  }
+  86% {
+    transform: translate(100px, 100px) rotate(-15deg) translateX(-58px);
+    opacity: 1;
+  }
+  92%,
+  100% {
+    transform: translate(100px, 100px) rotate(-15deg) translateX(-58px) scale(0.6);
+    opacity: 0;
+  }
+}
+@keyframes guide-pinch-b {
+  0%,
+  48% {
+    transform: translate(100px, 100px) rotate(-45deg) translateX(14px);
+    opacity: 0;
+  }
+  54% {
+    transform: translate(100px, 100px) rotate(-45deg) translateX(14px);
+    opacity: 1;
+  }
+  86% {
+    transform: translate(100px, 100px) rotate(-15deg) translateX(58px);
+    opacity: 1;
+  }
+  92%,
+  100% {
+    transform: translate(100px, 100px) rotate(-15deg) translateX(58px) scale(0.6);
+    opacity: 0;
+  }
+}
+/* Mouse: the box is dragged, then its bottom-right handle pulled out (scaled from the top-left
+   corner, which stays put: translate = start - 40 * (1 - scale)). */
+.guide-box {
+  animation-name: guide-box;
+}
+@keyframes guide-box {
+  0% {
+    transform: translate(70px, 96px);
+    opacity: 0;
+  }
+  6% {
+    transform: translate(70px, 96px);
+    opacity: 1;
+  }
+  36%,
+  52% {
+    transform: translate(104px, 96px);
+    opacity: 1;
+  }
+  84%,
+  94% {
+    transform: translate(118px, 110px) scale(1.35);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(118px, 110px) scale(1.35);
+    opacity: 0;
+  }
+}
+.guide-cursor {
+  animation-name: guide-cursor;
+}
+@keyframes guide-cursor {
+  0% {
+    transform: translate(76px, 102px);
+    opacity: 0;
+  }
+  6% {
+    transform: translate(76px, 102px);
+    opacity: 1;
+  }
+  36% {
+    transform: translate(110px, 102px);
+  }
+  44%,
+  52% {
+    transform: translate(146px, 138px);
+  }
+  84%,
+  94% {
+    transform: translate(174px, 166px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(174px, 166px);
+    opacity: 0;
+  }
+}
+.guide-step-1,
+.guide-step-2 {
+  animation: 4.8s ease-in-out infinite;
+}
+.guide-step-1 {
+  animation-name: guide-step-1;
+}
+.guide-step-2 {
+  animation-name: guide-step-2;
+}
+@keyframes guide-step-1 {
+  0%,
+  40% {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  46%,
+  100% {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+}
+@keyframes guide-step-2 {
+  0%,
+  46% {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+  52%,
+  90% {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  96%,
+  100% {
+    background: var(--color-surface);
+    color: var(--color-text);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* A still picture of the second gesture instead of the loop. */
+  .guide-demo *,
+  .guide-step-1,
+  .guide-step-2 {
+    animation: none;
+  }
+  .guide-drag,
+  .guide-trail {
+    opacity: 0;
+  }
+  .guide-pinch-a {
+    transform: translate(100px, 100px) rotate(-30deg) translateX(-44px);
+  }
+  .guide-pinch-b {
+    transform: translate(100px, 100px) rotate(-30deg) translateX(44px);
+  }
+  .guide-box {
+    transform: translate(118px, 110px) scale(1.35);
+  }
+  .guide-cursor {
+    transform: translate(174px, 166px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

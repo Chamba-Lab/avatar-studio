@@ -6,21 +6,16 @@ import { Icon, type IconName } from '../ui/Icon.tsx';
 import { AvatarStage } from './AvatarStage.tsx';
 import { exportAvatar } from './exportAvatar.ts';
 import { DecorPanel, type Tab } from './DecorPanel.tsx';
-import {
-  copyToRemove,
-  createHistory,
-  freeSpot,
-  historyReducer,
-  type Scene,
-  type SceneAction,
-} from './scene.ts';
+import { FirstUseGuide } from './FirstUseGuide.tsx';
+import { useFirstUseGuide } from './useFirstUseGuide.ts';
+import { copyToRemove, freeSpot, historyReducer, type History, type SceneAction } from './scene.ts';
 
 type Props = {
   photo: LoadedPhoto;
-  initialScene: Scene;
+  initialHistory: History;
   onClose: () => void;
   onReplacePhoto: () => void;
-  onSaved: (png: Blob, scene: Scene) => void;
+  onSaved: (png: Blob, history: History) => void;
 };
 
 const newUid = () => crypto.randomUUID().slice(0, 8);
@@ -74,11 +69,14 @@ function ActionButton({
   );
 }
 
-export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onSaved }: Props) {
-  const [history, dispatch] = useReducer(historyReducer, initialScene, createHistory);
+export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, onSaved }: Props) {
+  const [history, dispatch] = useReducer(historyReducer, initialHistory);
   const scene = history.present;
   const [rawSelected, setSelected] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>(initialScene.stickers.length ? 'stickers' : 'frame');
+  const [tab, setTab] = useState<Tab>(
+    initialHistory.present.stickers.length ? 'stickers' : 'frame',
+  );
+  const guide = useFirstUseGuide();
   const [saving, setSaving] = useState(false);
   const stageRef = useRef<Konva.Stage>(null);
   const stageBox = useRef<HTMLDivElement>(null);
@@ -120,7 +118,7 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
     // Let the transformer detach before rendering the export.
     await new Promise((r) => requestAnimationFrame(r));
     try {
-      onSaved(await exportAvatar(stageRef.current), scene);
+      onSaved(await exportAvatar(stageRef.current), history);
     } finally {
       setSaving(false);
     }
@@ -304,6 +302,8 @@ export function EditorScreen({ photo, initialScene, onClose, onReplacePhoto, onS
           <Icon name="arrow" size={18} />
         </button>
       </aside>
+      {/* Last, so the canvas ref is attached by the time the guide measures it. */}
+      {guide.open && <FirstUseGuide stage={stageBox} onDone={guide.dismiss} />}
     </main>
   );
 }
