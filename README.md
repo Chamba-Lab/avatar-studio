@@ -3,7 +3,8 @@
 Decorate your profile picture with frames and stickers, then save it for Discord. Everything runs
 in the browser: your photo never leaves your device.
 
-> **Status:** in development, aiming for v1.0 with the Christmas and Chamba Lab themes.
+> **Status:** in development, aiming for v1.0 on 12 December with the Christmas, New Year and
+> Chamba Lab themes.
 
 ## Develop
 
@@ -28,6 +29,11 @@ Each theme is a folder in `src/themes/` with a `theme.json` and its images. Addi
 theme only touches that folder; the tests validate the data and every asset. See
 [docs/theme-schema.md](docs/theme-schema.md) and the art guide in
 [design/style-guide.md](design/style-guide.md).
+
+## Contributing
+
+Stickers, frames and whole themes are the easiest way to help. Read
+[CONTRIBUTING.md](CONTRIBUTING.md), and [AGENTS.md](AGENTS.md) before changing the editor.
 
 ## License
 

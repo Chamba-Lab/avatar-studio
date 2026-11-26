@@ -1,0 +1,31 @@
+name: PR title
+
+# Only the title: listens to edits too, without re-running lint, tests or build.
+# The job name is a required check in the master ruleset; keep it stable.
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-title-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  pr-title:
+    name: PR title (Conventional Commits)
+    runs-on: ubuntu-latest
+    steps:
+      # Squash merges turn the pull request title into the commit message.
+      - name: Validate title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|docs|perf|refactor|chore|test|style|build|ci|revert)(\([a-z0-9._/-]+\))?!?: .+'
+          if ! printf '%s' "$TITLE" | grep -Eq "$pattern"; then
+            echo "::error::The pull request title must follow Conventional Commits, e.g. 'feat(themes): add a Halloween theme'. Got: $TITLE"
+            exit 1
+          fi
