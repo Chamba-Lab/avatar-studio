@@ -9,6 +9,7 @@ import {
   MAX_PHOTO_SCALE,
   MAX_STICKER_SCALE,
   MIN_PHOTO_SCALE,
+  keyboardNudge,
   stickerTileTap,
 } from './scene.ts';
 
@@ -202,5 +203,25 @@ describe('stickerTileTap', () => {
     const tap = stickerTileTap(withHat(), 'christmas/santa-hat', null, hat, 'n');
     expect(tap.action).toEqual({ type: 'removeSticker', uid: 'a' });
     expect(tap.select).toBeUndefined();
+  });
+});
+
+describe('keyboardNudge', () => {
+  const p = { x: 0.5, y: 0.5, scale: 0.4, rotation: 0 };
+
+  it('moves with the arrows, further with Shift', () => {
+    expect(keyboardNudge(p, 'ArrowLeft', false)).toEqual({ x: 0.49 });
+    expect(keyboardNudge(p, 'ArrowDown', true)).toEqual({ y: 0.55 });
+  });
+
+  it('resizes with + and - and turns with brackets', () => {
+    expect(keyboardNudge(p, '+', false)?.scale).toBeCloseTo(0.424);
+    expect(keyboardNudge(p, '-', false)?.scale).toBeCloseTo(0.4 / 1.06);
+    expect(keyboardNudge(p, ']', false)).toEqual({ rotation: 5 });
+    expect(keyboardNudge(p, '{', true)).toEqual({ rotation: -15 });
+  });
+
+  it('ignores other keys', () => {
+    expect(keyboardNudge(p, 'a', false)).toBeNull();
   });
 });

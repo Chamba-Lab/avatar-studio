@@ -1,7 +1,14 @@
 import type { Background } from '../scene.ts';
 import { tileBase } from './styles.ts';
 
-const SWATCHES = ['#fcf6e8', '#ffffff', '#121016', '#f7b696', '#7ce0c3', '#e53935'];
+const SWATCHES = [
+  { color: '#fcf6e8', name: 'Cream' },
+  { color: '#ffffff', name: 'White' },
+  { color: '#121016', name: 'Ink' },
+  { color: '#f7b696', name: 'Peach' },
+  { color: '#7ce0c3', name: 'Mint' },
+  { color: '#e53935', name: 'Red' },
+];
 const CHECKER =
   'bg-[conic-gradient(#3a3542_25%,#27232f_0_50%,#3a3542_0_75%,#27232f_0)] [background-size:12px_12px]';
 
@@ -17,11 +24,12 @@ type Props = {
 
 /** What fills the canvas where the photo does not reach: blurred photo, a color or nothing. */
 export function BackgroundPicker({ background: bg, photoPreview, onBackground }: Props) {
-  const customColor = bg.kind === 'color' && !SWATCHES.includes(bg.color);
+  const customColor = bg.kind === 'color' && !SWATCHES.some((s) => s.color === bg.color);
   return (
     <fieldset className="flex flex-col gap-2.5">
       <legend className="mb-2.5 text-[13px] text-muted">
-        Background <span className="text-muted/70">· shows where the photo doesn’t reach</span>
+        <span className="font-semibold text-text">Background</span> · shows where the photo doesn’t
+        reach
       </legend>
       <div className="flex flex-wrap items-center gap-2.5">
         <button
@@ -38,13 +46,14 @@ export function BackgroundPicker({ background: bg, photoPreview, onBackground }:
             className="h-full w-full scale-150 object-cover blur-[3px]"
           />
         </button>
-        {SWATCHES.map((color) => {
+        {SWATCHES.map(({ color, name }) => {
           const on = bg.kind === 'color' && bg.color === color;
           return (
             <button
               key={color}
               type="button"
-              aria-label={`Color ${color}`}
+              aria-label={name}
+              title={name}
               aria-pressed={on}
               onClick={() => onBackground({ kind: 'color', color })}
               className={ring(on)}

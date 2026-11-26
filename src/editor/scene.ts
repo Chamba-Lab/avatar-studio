@@ -190,6 +190,44 @@ export function stickerTileTap(
   };
 }
 
+/**
+ * Keyboard editing of the selected sticker: arrows move it, + and - resize, [ and ] turn it.
+ * Shift makes each step bigger. Returns null for any other key.
+ */
+export function keyboardNudge(
+  sticker: Placement,
+  key: string,
+  shift: boolean,
+): Partial<Placement> | null {
+  const move = shift ? 0.05 : 0.01;
+  const turn = shift ? 15 : 5;
+  const grow = shift ? 1.25 : 1.06;
+  switch (key) {
+    case 'ArrowLeft':
+      return { x: sticker.x - move };
+    case 'ArrowRight':
+      return { x: sticker.x + move };
+    case 'ArrowUp':
+      return { y: sticker.y - move };
+    case 'ArrowDown':
+      return { y: sticker.y + move };
+    case '+':
+    case '=':
+      return { scale: sticker.scale * grow };
+    case '-':
+    case '_':
+      return { scale: sticker.scale / grow };
+    case '[':
+    case '{':
+      return { rotation: sticker.rotation - turn };
+    case ']':
+    case '}':
+      return { rotation: sticker.rotation + turn };
+    default:
+      return null;
+  }
+}
+
 /** Undo history. Every committed action is one step; `preview` changes the present without one. */
 export type History = { past: Scene[]; present: Scene; future: Scene[] };
 
