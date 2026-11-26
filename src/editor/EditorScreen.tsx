@@ -9,7 +9,8 @@ import {
   useState,
 } from 'react';
 import type { LoadedPhoto } from '../photo/loadPhoto.ts';
-import { assetKey } from '../themes/catalog.ts';
+import { photoThumbnail } from '../photo/thumbnail.ts';
+import { assetKey, assets } from '../themes/catalog.ts';
 import { Icon } from '../ui/Icon.tsx';
 import { AvatarStage } from './AvatarStage.tsx';
 import { exportAvatar } from './exportAvatar.ts';
@@ -17,7 +18,14 @@ import { DecorPanel, type Tab } from './DecorPanel.tsx';
 import { FirstUseGuide } from './FirstUseGuide.tsx';
 import { StickerToolbar } from './StickerToolbar.tsx';
 import { useFirstUseGuide } from './useFirstUseGuide.ts';
-import { historyReducer, stickerTileTap, type History, type SceneAction } from './scene.ts';
+import {
+  historyReducer,
+  keyboardNudge,
+  stickerTileTap,
+  type History,
+  type Scene,
+  type SceneAction,
+} from './scene.ts';
 
 type Props = {
   photo: LoadedPhoto;
@@ -70,7 +78,7 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
     return usage;
   }, [scene.stickers]);
   const selectedRef = scene.stickers.find((s) => s.uid === selected)?.ref ?? null;
-  const photoPreview = useMemo(() => photo.canvas.toDataURL('image/jpeg', 0.6), [photo]);
+  const photoPreview = useMemo(() => photoThumbnail(photo), [photo]);
 
   // Keyboard shortcuts: undo/redo, delete the selected sticker, Escape to deselect.
   // An effect event reads the latest selection without re-subscribing on every render.
@@ -89,6 +97,40 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  // Keyboard editing on the focused canvas. A held key is one gesture: previews while it repeats,
+  // then a single undo step when it is released (or focus leaves).
+  const keyGestureStart = useRef<Scene | null>(null);
+  const endKeyGesture = () => {
+    if (keyGestureStart.current) dispatch({ type: 'checkpoint', before: keyGestureStart.current });
+    keyGestureStart.current = null;
+  };
+  const onCanvasKey = (e: React.KeyboardEvent) => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Tab') {
+      // Tab walks through the stickers on the canvas, then on out of it: never a trap.
+      const i = scene.stickers.findIndex((s) => s.uid === selected);
+      const next = i + (e.shiftKey ? -1 : 1);
+      if (e.shiftKey && i === -1) return;
+      if (next >= 0 && next < scene.stickers.length) {
+        e.preventDefault();
+        setSelected(scene.stickers[next].uid);
+      } else if (next < 0) {
+        e.preventDefault();
+        setSelected(null);
+      } else {
+        setSelected(null);
+      }
+      return;
+    }
+    const sticker = scene.stickers.find((s) => s.uid === selected);
+    const patch = sticker && keyboardNudge(sticker, e.key, e.shiftKey);
+    if (!sticker || !patch) return;
+    e.preventDefault();
+    keyGestureStart.current ??= scene;
+    dispatch({ type: 'preview', action: { type: 'updateSticker', uid: sticker.uid, patch } });
+  };
+  const selectedName = assets.get(selectedRef ?? '')?.name;
 
   const save = async () => {
     if (!stageRef.current || saving) return;
@@ -170,7 +212,15 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
 
         <div
           ref={stageBox}
-          className="relative flex min-h-0 flex-1 touch-none items-center justify-center bg-[radial-gradient(rgb(255_255_255/0.07)_1px,transparent_1px)] [background-size:18px_18px] p-3 select-none lg:p-8"
+          tabIndex={0}
+          role="group"
+          aria-roledescription="canvas"
+          aria-label="Your avatar"
+          aria-describedby="canvas-help"
+          onKeyDown={onCanvasKey}
+          onKeyUp={endKeyGesture}
+          onBlur={endKeyGesture}
+          className="relative flex min-h-0 flex-1 touch-none focus-visible:outline-offset-[-6px] items-center justify-center bg-[radial-gradient(rgb(255_255_255/0.07)_1px,transparent_1px)] [background-size:18px_18px] p-3 select-none lg:p-8"
         >
           {size > 0 && (
             <div
@@ -197,15 +247,22 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
           )}
         </div>
 
+        <p id="canvas-help" className="sr-only">
+          Tab selects the next sticker. Arrow keys move it, plus and minus resize it, brackets turn
+          it, Delete removes it.
+        </p>
+        <p aria-live="polite" className="sr-only">
+          {selectedName ? `${selectedName} selected` : ''}
+        </p>
         <div className="flex h-14 shrink-0 items-center justify-center lg:h-[72px]">
           {selectedActions || <p className="text-[13px] text-muted">{hint}</p>}
         </div>
       </section>
 
-      <aside className="flex max-h-[40dvh] shrink-0 flex-col gap-3 overflow-y-auto rounded-t-[30px] border-t border-hairline bg-surface px-4 pt-2.5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:w-[400px] lg:rounded-none lg:border-t-0 lg:border-l lg:px-6 lg:pt-6">
+      <aside className="flex max-h-[40dvh] shrink-0 flex-col gap-3 overflow-hidden rounded-t-[30px] border-t border-hairline bg-surface px-4 pt-2.5 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:max-h-none lg:w-[400px] lg:rounded-none lg:border-t-0 lg:border-l lg:px-6 lg:pt-6">
         <div
           aria-hidden="true"
-          className="mx-auto h-[5px] w-[38px] rounded-full bg-white/18 lg:hidden"
+          className="mx-auto h-[5px] w-[38px] shrink-0 rounded-full bg-white/18 lg:hidden"
         />
         <h2 className="hidden font-display text-2xl font-extrabold tracking-tight lg:block">
           Decorate
@@ -243,7 +300,7 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
           type="button"
           onClick={save}
           disabled={saving}
-          className="mt-auto hidden h-14 items-center justify-center gap-2 rounded-[18px] bg-accent text-base font-bold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 lg:flex"
+          className="hidden h-14 shrink-0 items-center justify-center gap-2 rounded-[18px] bg-accent text-base font-bold text-on-accent transition-transform active:scale-[0.98] disabled:opacity-60 lg:flex"
         >
           {saving ? 'Saving…' : 'Save avatar'}
           <Icon name="arrow" size={18} />

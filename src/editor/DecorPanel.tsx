@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { themes } from '../themes/catalog.ts';
 import type { Theme } from '../themes/types.ts';
 import { FrameTab } from './panel/FrameTab.tsx';
@@ -41,25 +41,53 @@ export function DecorPanel(props: Props) {
   const [themeId, setThemeId] = useState(themes[0]?.id);
   const theme = themes.find((t) => t.id === themeId) ?? themes[0];
   const tabIndex = TABS.findIndex((t) => t.id === tab);
+  const tabButtons = useRef<Array<HTMLButtonElement | null>>([]);
+
+  /** Arrow keys, Home and End move between tabs, as in the ARIA tabs pattern. */
+  const onTabKey = (e: React.KeyboardEvent) => {
+    const last = TABS.length - 1;
+    const next =
+      e.key === 'ArrowRight'
+        ? (tabIndex + 1) % TABS.length
+        : e.key === 'ArrowLeft'
+          ? (tabIndex - 1 + TABS.length) % TABS.length
+          : e.key === 'Home'
+            ? 0
+            : e.key === 'End'
+              ? last
+              : null;
+    if (next === null) return;
+    e.preventDefault();
+    onTab(TABS[next].id);
+    tabButtons.current[next]?.focus();
+  };
 
   return (
-    <div className="flex flex-col gap-3">
+    // Only the tab body scrolls, so the tabs and themes stay in reach on a short phone panel.
+    <div className="flex min-h-0 flex-1 flex-col gap-3">
       <div
         role="tablist"
         aria-label="Editor sections"
-        className="relative grid grid-cols-3 rounded-2xl bg-ink p-1"
+        onKeyDown={onTabKey}
+        className="relative grid shrink-0 grid-cols-3 rounded-2xl bg-ink p-1"
       >
         <div
           aria-hidden="true"
           className="absolute top-1 bottom-1 left-1 w-[calc((100%-0.5rem)/3)] rounded-xl bg-raised shadow-[0_4px_12px_rgb(0_0_0/0.35)] transition-transform duration-300 ease-out-expo"
           style={{ transform: `translateX(${tabIndex * 100}%)` }}
         />
-        {TABS.map((t) => (
+        {TABS.map((t, i) => (
           <button
             key={t.id}
+            ref={(el) => {
+              tabButtons.current[i] = el;
+            }}
+            id={`tab-${t.id}`}
             type="button"
             role="tab"
             aria-selected={tab === t.id}
+            aria-controls="decor-panel"
+            tabIndex={tab === t.id ? 0 : -1}
             onClick={() => onTab(t.id)}
             className={`relative h-10 text-sm font-semibold transition-colors ${tab === t.id ? 'text-text' : 'text-muted'}`}
           >
@@ -69,7 +97,7 @@ export function DecorPanel(props: Props) {
       </div>
 
       {tab !== 'photo' && (
-        <div className="flex gap-2 overflow-x-auto pb-1" aria-label="Themes">
+        <div role="group" aria-label="Themes" className="flex shrink-0 gap-2 overflow-x-auto pb-1">
           {themes.map((t) => (
             <button
               key={t.id}
@@ -90,23 +118,32 @@ export function DecorPanel(props: Props) {
         </div>
       )}
 
-      {tab === 'stickers' && (
-        <StickerTab
-          theme={theme}
-          usage={props.stickerUsage}
-          selectedRef={props.selectedRef}
-          onSticker={props.onSticker}
-        />
-      )}
-      {tab === 'frame' && (
-        <FrameTab
-          theme={theme}
-          frame={props.frame}
-          photoPreview={props.photoPreview}
-          onFrame={props.onFrame}
-        />
-      )}
-      {tab === 'photo' && <PhotoTab {...props} />}
+      <div
+        // Remounted per tab so each one starts scrolled to the top.
+        key={tab}
+        id="decor-panel"
+        role="tabpanel"
+        aria-labelledby={`tab-${tab}`}
+        className="-mx-1 min-h-0 flex-1 overflow-y-auto px-1 pb-1"
+      >
+        {tab === 'stickers' && (
+          <StickerTab
+            theme={theme}
+            usage={props.stickerUsage}
+            selectedRef={props.selectedRef}
+            onSticker={props.onSticker}
+          />
+        )}
+        {tab === 'frame' && (
+          <FrameTab
+            theme={theme}
+            frame={props.frame}
+            photoPreview={props.photoPreview}
+            onFrame={props.onFrame}
+          />
+        )}
+        {tab === 'photo' && <PhotoTab {...props} />}
+      </div>
     </div>
   );
 }
