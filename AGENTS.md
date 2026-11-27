@@ -31,7 +31,7 @@ A web app to decorate a profile picture with frames and stickers and save it for
 | `src/themes/`          | One folder per theme (`theme.json` + images), discovered at build time; `catalog.ts` resolves them          |
 | `src/screens/`         | Start, save and status screens                                                                              |
 | `src/ui/`              | Icons, shared tokens for JS, media queries, error boundary                                                  |
-| `design/`              | Style guide and per-theme asset prompts                                                                     |
+| `design/`              | Style guide, per-theme asset prompts, link preview and icons source                                         |
 | `docs/theme-schema.md` | Theme and scene format                                                                                      |
 
 Key ideas:

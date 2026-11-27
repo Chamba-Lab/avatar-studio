@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#121016" />
     <meta
@@ -10,6 +12,24 @@
       content="Decorate your profile picture with frames and stickers. Everything runs in your browser: your photo never leaves your device."
     />
     <title>Avatar Studio</title>
+
+    <!-- Link previews (Discord, social networks, chat apps) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Avatar Studio" />
+    <meta property="og:title" content="Avatar Studio: dress up your avatar" />
+    <meta
+      property="og:description"
+      content="Frames and stickers for your Discord profile. Your photo never leaves your device."
+    />
+    <meta property="og:url" content="%VITE_SITE_URL%" />
+    <meta property="og:image" content="%VITE_SITE_URL%og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Rakim the raccoon in three decorated avatars: a Christmas wreath, the Chamba Lab ring and a confetti ring."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>
