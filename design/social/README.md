@@ -1,17 +1,31 @@
-# Link preview and home screen icons
+# Logo, link preview and home screen icons
 
-`og-image.html` is the source of these files in `public/`:
+## Logo
 
-| File                   | Size       | Used for                                            |
-| :--------------------- | :--------- | :-------------------------------------------------- |
-| `og-image.png`         | 1200 × 630 | Link preview on Discord and other apps (`og:image`) |
-| `icon-512.png`         | 512 × 512  | Home screen icon (web app manifest, maskable)       |
-| `icon-192.png`         | 192 × 192  | Home screen icon (web app manifest, maskable)       |
-| `apple-touch-icon.png` | 180 × 180  | Home screen icon on iPhone and iPad                 |
+The mark is Rakim's coffee mug from the chambalab.org logo, as a die-cut sticker caught mid-edit
+inside the editor's own selection: peach dashed bounds, cream handles and the rotate knob (the same
+colours as the Konva transformer in `src/editor/AvatarStage.tsx`). The sources are in `logo/`:
 
-To regenerate them after changing the HTML (fonts load from `node_modules`, so run `npm ci` first),
-open the file in Playwright and screenshot `#og`, then `#icon` with `zoom` set to `size / 512` for
-each icon size. Keep the icon's artwork inside the central 80 % so Android's mask never cuts it.
+| File                     | Use                                                                     |
+| :----------------------- | :---------------------------------------------------------------------- |
+| `logo/icon.svg`          | The full mark: app icon, link preview and anywhere at 40 px or more     |
+| `logo/icon-small.svg`    | Favicon and sizes under 40 px: the mug only, the handles would be noise |
+| `logo/icon-maskable.svg` | Android maskable icon and iPhone home screen: the mark at 80 % on ink   |
+
+`public/favicon.svg` is a copy of `logo/icon-small.svg`.
+
+## Generated files in `public/`
+
+| File                    | Size       | Source                                 |
+| :---------------------- | :--------- | :------------------------------------- |
+| `og-image.png`          | 1200 × 630 | `og-image.html`, element `#og`         |
+| `icon-512.png`          | 512 × 512  | `icons.html`, `logo/icon.svg`          |
+| `icon-192.png`          | 192 × 192  | `icons.html`, `logo/icon.svg`          |
+| `icon-maskable-512.png` | 512 × 512  | `icons.html`, `logo/icon-maskable.svg` |
+| `apple-touch-icon.png`  | 180 × 180  | `icons.html`, `logo/icon-maskable.svg` |
+
+To regenerate them (fonts load from `node_modules`, so run `npm ci` first), open each HTML file in
+Playwright and screenshot the element with the same id as the file name.
 
 `og:image` needs an absolute address. It is built from `VITE_SITE_URL` (`.env`, overridden in CI
 while the site lives under `github.io/avatar-studio/`). When the custom domain goes live, remove

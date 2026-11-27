@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512"><defs><g id="coffee"><g fill="#FCF6E8" stroke="#FCF6E8" stroke-width="40" stroke-linejoin="round" stroke-linecap="round"><path d="M84 64c-20-12 14-24-2-44M124 60c-20-12 14-24-2-44" fill="none"/><path d="M48 86 H172 L166 196 Q164 216 144 216 H76 Q56 216 54 196 Z"/><path d="M170 112 c46 -4 50 72 -10 74" fill="none" stroke-width="72"/></g>
+<path d="M170 112 c46 -4 50 72 -10 74" fill="none" stroke="#14111A" stroke-width="34" stroke-linecap="round"/><path d="M170 112 c46 -4 50 72 -10 74" fill="none" stroke="#FCF6E8" stroke-width="9" stroke-linecap="round"/>
+<path d="M84 64c-20-12 14-24-2-44M124 60c-20-12 14-24-2-44" fill="none" stroke="#14111A" stroke-width="13" stroke-linecap="round"/>
+<path d="M48 86 H172 L166 196 Q164 216 144 216 H76 Q56 216 54 196 Z" fill="#FCF6E8" stroke="#14111A" stroke-width="13" stroke-linejoin="round"/>
+<path d="M146 92 H166 L160 194 Q159 208 146 209 Q154 196 154 186 Z" fill="#E8DCC4"/>
+<path d="M58 100 H162" stroke="#E8DCC4" stroke-width="6" stroke-linecap="round"/></g>
+</defs><rect width="512" height="512" fill="#121016"/><g transform="translate(51.2 51.2) scale(.8)"><g transform="rotate(-6 256 280)"><use href="#coffee" transform="translate(128 173) scale(1)"/><rect x="104" y="146" width="304" height="290" rx="6" fill="none" stroke="#F7B696" stroke-width="11" stroke-dasharray="30 18"/>
+  <path d="M256 146 V100" stroke="#F7B696" stroke-width="11"/>
+  <circle cx="104" cy="146" r="22" fill="#FCF6E8" stroke="#F7B696" stroke-width="9.35"/><circle cx="408" cy="146" r="22" fill="#FCF6E8" stroke="#F7B696" stroke-width="9.35"/><circle cx="104" cy="436" r="22" fill="#FCF6E8" stroke="#F7B696" stroke-width="9.35"/><circle cx="408" cy="436" r="22" fill="#FCF6E8" stroke="#F7B696" stroke-width="9.35"/><circle cx="256" cy="100" r="22" fill="#FCF6E8" stroke="#F7B696" stroke-width="9.35"/></g></g></svg>
