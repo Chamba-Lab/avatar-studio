@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "id": "mood",
+  "name": "Mood",
+  "icon": "icon.svg",
+  "order": 25,
+  "frames": [
+    { "id": "focus-lines", "name": "Focus lines", "src": "frames/focus-lines.svg" },
+    { "id": "rage-burst", "name": "Rage burst", "src": "frames/rage-burst.svg" }
+  ],
+  "stickers": [
+    {
+      "id": "anger-vein",
+      "name": "Anger vein",
+      "src": "stickers/anger-vein.svg",
+      "defaults": { "x": 0.72, "y": 0.24, "scale": 0.24, "rotation": 0 }
+    },
+    {
+      "id": "exclamation",
+      "name": "Exclamation",
+      "src": "stickers/exclamation.svg",
+      "defaults": { "x": 0.24, "y": 0.24, "scale": 0.26, "rotation": -8 }
+    },
+    {
+      "id": "huff",
+      "name": "Huff",
+      "src": "stickers/huff.svg",
+      "defaults": { "x": 0.22, "y": 0.66, "scale": 0.3, "rotation": 0 }
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "src": "stickers/lightning.svg",
+      "defaults": { "x": 0.8, "y": 0.5, "scale": 0.26, "rotation": 8 }
+    },
+    {
+      "id": "sweat-drop",
+      "name": "Sweat drop",
+      "src": "stickers/sweat-drop.svg",
+      "defaults": { "x": 0.7, "y": 0.28, "scale": 0.2, "rotation": 10 }
+    }
+  ],
+  "credits": [
+    {
+      "author": "Chamba Lab",
+      "assets": [
+        "focus-lines",
+        "rage-burst",
+        "anger-vein",
+        "exclamation",
+        "huff",
+        "lightning",
+        "sweat-drop"
+      ]
+    }
+  ]
+}
