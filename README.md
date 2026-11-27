@@ -3,8 +3,8 @@
 Decorate your profile picture with frames and stickers, then save it for Discord. Everything runs
 in the browser: your photo never leaves your device.
 
-> **Status:** in development, aiming for v1.0 on 12 December with the Christmas, New Year and
-> Chamba Lab themes.
+> **Status:** in development, aiming for v1.0 on 12 December with the Christmas, New Year,
+> Chamba Lab and Mood themes.
 
 ## Develop
 

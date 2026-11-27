@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "mood",
+  "name": "Mood",
+  "icon": "icon.svg",
+  "order": 25,
+  "frames": [
+    {
+      "id": "mood-ring",
+      "name": "Mood ring",
+      "src": "frames/mood-ring.svg"
+    },
+    {
+      "id": "seeing-red",
+      "name": "Seeing red",
+      "src": "frames/seeing-red.svg"
+    },
+    {
+      "id": "worried",
+      "name": "Worried",
+      "src": "frames/worried.svg"
+    }
+  ],
+  "stickers": [
+    {
+      "id": "anger-vein",
+      "name": "Anger vein",
+      "src": "stickers/anger-vein.svg",
+      "defaults": {
+        "x": 0.72,
+        "y": 0.24,
+        "scale": 0.24,
+        "rotation": 0
+      }
+    },
+    {
+      "id": "exclamation",
+      "name": "Exclamation",
+      "src": "stickers/exclamation.svg",
+      "defaults": {
+        "x": 0.24,
+        "y": 0.24,
+        "scale": 0.26,
+        "rotation": -8
+      }
+    },
+    {
+      "id": "huff",
+      "name": "Huff",
+      "src": "stickers/huff.svg",
+      "defaults": {
+        "x": 0.2,
+        "y": 0.62,
+        "scale": 0.3,
+        "rotation": 0
+      }
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "src": "stickers/lightning.svg",
+      "defaults": {
+        "x": 0.82,
+        "y": 0.64,
+        "scale": 0.24,
+        "rotation": 10
+      }
+    },
+    {
+      "id": "sweat-drop",
+      "name": "Sweat drop",
+      "src": "stickers/sweat-drop.svg",
+      "defaults": {
+        "x": 0.84,
+        "y": 0.42,
+        "scale": 0.2,
+        "rotation": 10
+      }
+    }
+  ],
+  "credits": [
+    {
+      "author": "Chamba Lab",
+      "assets": [
+        "mood-ring",
+        "seeing-red",
+        "worried",
+        "anger-vein",
+        "exclamation",
+        "huff",
+        "lightning",
+        "sweat-drop"
+      ]
+    }
+  ]
+}
