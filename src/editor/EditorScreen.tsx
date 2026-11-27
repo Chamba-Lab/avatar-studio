@@ -149,7 +149,9 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
   };
 
   const selectedSticker = scene.stickers.find((s) => s.uid === selected);
-  const variants = selectedSticker && assets.get(selectedSticker.ref)?.variants;
+  const tint = selectedSticker && assets.get(selectedSticker.ref)?.tint;
+  // Dragging inside the colour picker previews; closing it makes one undo step.
+  const tintGestureStart = useRef<Scene | null>(null);
   // "Behind the photo" only makes sense where the sticker would still show: a cut-out photo, or one
   // that no longer covers the canvas. A sticker already behind keeps the button so it can come back.
   const canGoBehind =
@@ -179,16 +181,32 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
           : null
       }
       colors={
-        variants
+        tint
           ? {
-              variants,
-              current: selectedSticker.variant ?? 'default',
-              onPick: (id) =>
-                commit({
-                  type: 'setVariant',
-                  uid: selected,
-                  variant: id === 'default' ? null : id,
-                }),
+              original: tint.colors[0],
+              suggested: tint.suggested ?? null,
+              current: selectedSticker.tint ?? null,
+              onPick: (color) => commit({ type: 'setTint', uid: selected, tint: color }),
+              onPreview: (color) => {
+                tintGestureStart.current ??= scene;
+                dispatch({
+                  type: 'preview',
+                  action: { type: 'setTint', uid: selected, tint: color },
+                });
+              },
+              onPreviewEnd: (color) => {
+                const before = tintGestureStart.current;
+                tintGestureStart.current = null;
+                if (!before) {
+                  commit({ type: 'setTint', uid: selected, tint: color });
+                  return;
+                }
+                dispatch({
+                  type: 'preview',
+                  action: { type: 'setTint', uid: selected, tint: color },
+                });
+                dispatch({ type: 'checkpoint', before });
+              },
             }
           : null
       }

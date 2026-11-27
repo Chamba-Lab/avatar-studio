@@ -73,13 +73,13 @@ describe('applyAction', () => {
     expect('behindPhoto' in scene.stickers.find((s) => s.uid === 'a')!).toBe(false);
   });
 
-  it('sets and clears a colour variant, and duplicates keep it', () => {
-    let scene = applyAction(withHat(), { type: 'setVariant', uid: 'a', variant: 'orange' });
-    expect(scene.stickers[0].variant).toBe('orange');
+  it('sets and clears a tint, and duplicates keep it', () => {
+    let scene = applyAction(withHat(), { type: 'setTint', uid: 'a', tint: '#FB8C00' });
+    expect(scene.stickers[0].tint).toBe('#FB8C00');
     scene = applyAction(scene, { type: 'duplicateSticker', uid: 'a', newUid: 'b' });
-    expect(scene.stickers[1].variant).toBe('orange');
-    scene = applyAction(scene, { type: 'setVariant', uid: 'a', variant: null });
-    expect('variant' in scene.stickers[0]).toBe(false);
+    expect(scene.stickers[1].tint).toBe('#FB8C00');
+    scene = applyAction(scene, { type: 'setTint', uid: 'a', tint: null });
+    expect('tint' in scene.stickers[0]).toBe(false);
   });
 
   it('knows when the photo covers the canvas', () => {
