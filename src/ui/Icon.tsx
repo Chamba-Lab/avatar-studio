@@ -6,6 +6,8 @@ const paths = {
   redo: 'M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3',
   flip: 'M12 3v18M8 7l-5 5 5 5zM16 7l5 5-5 5z',
   front: 'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5',
+  toBack: 'M12 21l-9-5 9-5 9 5zM3 11l9-5 9 5',
+  behind: 'M10 3h11v11H10zM10 8.5A6.5 6.5 0 1015.5 14',
   duplicate: 'M8 8h12v12H8zM16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3',
   trash: 'M4 7h16M6 7l1 13h10l1-13M9 7V4h6v3',
   check: 'M5 12l5 5 9-10',

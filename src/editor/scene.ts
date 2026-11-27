@@ -12,6 +12,10 @@ export type StickerInstance = Placement & {
   /** Global asset key, e.g. "christmas/santa-hat". */
   ref: string;
   flipX: boolean;
+  /** Drawn under the photo (still over the background). Only visible where the photo does not cover. */
+  behindPhoto?: boolean;
+  /** Id of one of the sticker's colour variants; absent means the default colour. */
+  variant?: string;
 };
 
 /** What fills the canvas where the photo does not reach (after zooming out or moving it). */
@@ -52,6 +56,9 @@ export type SceneAction =
   | { type: 'duplicateSticker'; uid: string; newUid: string }
   | { type: 'flipSticker'; uid: string }
   | { type: 'bringToFront'; uid: string }
+  | { type: 'sendToBack'; uid: string }
+  | { type: 'setBehindPhoto'; uid: string; behind: boolean }
+  | { type: 'setVariant'; uid: string; variant: string | null }
   | { type: 'setFrame'; frame: string | null }
   | { type: 'setBackground'; background: Background }
   | { type: 'updatePhoto'; patch: Partial<PhotoTransform> }
@@ -105,6 +112,25 @@ export function applyAction(scene: Scene, action: SceneAction): Scene {
       if (!target) return scene;
       return { ...scene, stickers: [...scene.stickers.filter((s) => s !== target), target] };
     }
+    case 'sendToBack': {
+      const target = scene.stickers.find((s) => s.uid === action.uid);
+      if (!target) return scene;
+      return { ...scene, stickers: [target, ...scene.stickers.filter((s) => s !== target)] };
+    }
+    case 'setBehindPhoto':
+      return mapSticker(action.uid, (s) => {
+        const next = { ...s };
+        if (action.behind) next.behindPhoto = true;
+        else delete next.behindPhoto;
+        return next;
+      });
+    case 'setVariant':
+      return mapSticker(action.uid, (s) => {
+        const next = { ...s };
+        if (action.variant) next.variant = action.variant;
+        else delete next.variant;
+        return next;
+      });
     case 'setFrame':
       return { ...scene, frame: action.frame };
     case 'setBackground':
@@ -126,6 +152,42 @@ export function applyAction(scene: Scene, action: SceneAction): Scene {
     case 'clear':
       return { ...emptyScene(), photo: scene.photo, background: scene.background };
   }
+}
+
+/**
+ * Stickers are drawn in two groups: the ones behind the photo, then (over the photo and frame)
+ * the rest. Array order is the z-order inside each group.
+ */
+const sameGroup = (scene: Scene, uid: string) => {
+  const target = scene.stickers.find((s) => s.uid === uid);
+  return target ? scene.stickers.filter((s) => !!s.behindPhoto === !!target.behindPhoto) : [];
+};
+/** The sticker is already the top one of its group, so "Bring to front" would do nothing. */
+export const isOnTop = (scene: Scene, uid: string) => sameGroup(scene, uid).at(-1)?.uid === uid;
+/** The sticker is already the bottom one of its group, so "Send to back" would do nothing. */
+export const isAtBack = (scene: Scene, uid: string) => sameGroup(scene, uid)[0]?.uid === uid;
+
+/**
+ * Whether the photo covers the whole square canvas, so anything behind it would be hidden.
+ * `aspect` is the photo's width / height; at scale 1 its short side fills the canvas.
+ */
+export function photoCoversCanvas(photo: PhotoTransform, aspect: number): boolean {
+  const w = photo.scale * Math.max(aspect, 1);
+  const h = photo.scale * Math.max(1 / aspect, 1);
+  const t = (-photo.rotation * Math.PI) / 180;
+  const eps = 1e-6;
+  return [
+    [0, 0],
+    [1, 0],
+    [0, 1],
+    [1, 1],
+  ].every(([cx, cy]) => {
+    const dx = cx - photo.x;
+    const dy = cy - photo.y;
+    const lx = dx * Math.cos(t) - dy * Math.sin(t);
+    const ly = dx * Math.sin(t) + dy * Math.cos(t);
+    return Math.abs(lx) <= w / 2 + eps && Math.abs(ly) <= h / 2 + eps;
+  });
 }
 
 /**

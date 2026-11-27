@@ -6,6 +6,9 @@ import {
   createHistory,
   emptyScene,
   historyReducer,
+  isAtBack,
+  isOnTop,
+  photoCoversCanvas,
   MAX_PHOTO_SCALE,
   MAX_STICKER_SCALE,
   MIN_PHOTO_SCALE,
@@ -50,6 +53,45 @@ describe('applyAction', () => {
     expect(scene.stickers[1]).toMatchObject({ uid: 'b', x: 0.56, y: 0.26 });
     scene = applyAction(scene, { type: 'bringToFront', uid: 'a' });
     expect(scene.stickers.map((s) => s.uid)).toEqual(['b', 'a']);
+  });
+
+  it('sends a sticker to the back and tells front and back apart per group', () => {
+    let scene = applyAction(withHat(), { type: 'duplicateSticker', uid: 'a', newUid: 'b' });
+    scene = applyAction(scene, { type: 'duplicateSticker', uid: 'a', newUid: 'c' });
+    scene = applyAction(scene, { type: 'sendToBack', uid: 'c' });
+    expect(scene.stickers.map((s) => s.uid)).toEqual(['c', 'a', 'b']);
+    expect(isAtBack(scene, 'c')).toBe(true);
+    expect(isOnTop(scene, 'b')).toBe(true);
+
+    // Behind the photo, a sticker is its own group: alone there it is both top and back.
+    scene = applyAction(scene, { type: 'setBehindPhoto', uid: 'a', behind: true });
+    expect(scene.stickers.find((s) => s.uid === 'a')?.behindPhoto).toBe(true);
+    expect(isOnTop(scene, 'a') && isAtBack(scene, 'a')).toBe(true);
+    expect(isAtBack(scene, 'c') && isOnTop(scene, 'b')).toBe(true);
+
+    scene = applyAction(scene, { type: 'setBehindPhoto', uid: 'a', behind: false });
+    expect('behindPhoto' in scene.stickers.find((s) => s.uid === 'a')!).toBe(false);
+  });
+
+  it('sets and clears a colour variant, and duplicates keep it', () => {
+    let scene = applyAction(withHat(), { type: 'setVariant', uid: 'a', variant: 'orange' });
+    expect(scene.stickers[0].variant).toBe('orange');
+    scene = applyAction(scene, { type: 'duplicateSticker', uid: 'a', newUid: 'b' });
+    expect(scene.stickers[1].variant).toBe('orange');
+    scene = applyAction(scene, { type: 'setVariant', uid: 'a', variant: null });
+    expect('variant' in scene.stickers[0]).toBe(false);
+  });
+
+  it('knows when the photo covers the canvas', () => {
+    const fit = { x: 0.5, y: 0.5, scale: 1, rotation: 0 };
+    expect(photoCoversCanvas(fit, 1)).toBe(true);
+    expect(photoCoversCanvas(fit, 4 / 3)).toBe(true);
+    expect(photoCoversCanvas({ ...fit, scale: 0.8 }, 1)).toBe(false);
+    expect(photoCoversCanvas({ ...fit, x: 0.6 }, 1)).toBe(false);
+    // A landscape photo can slide sideways and still cover.
+    expect(photoCoversCanvas({ ...fit, x: 0.6 }, 4 / 3)).toBe(true);
+    expect(photoCoversCanvas({ ...fit, rotation: 20 }, 1)).toBe(false);
+    expect(photoCoversCanvas({ ...fit, rotation: 20, scale: 1.5 }, 1)).toBe(true);
   });
 
   it('flips and removes', () => {

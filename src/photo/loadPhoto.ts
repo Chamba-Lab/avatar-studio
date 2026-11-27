@@ -8,6 +8,8 @@ export type LoadedPhoto = {
   canvas: HTMLCanvasElement;
   width: number;
   height: number;
+  /** Has see-through pixels (a cut-out PNG, for example), so stickers behind it can show. */
+  hasAlpha: boolean;
 };
 
 export type PhotoErrorReason = 'not-an-image' | 'heic-unsupported' | 'decode-failed';
@@ -24,6 +26,23 @@ const HEIC = /\.(heic|heif)$/i;
 
 export function isProbablyImage(file: File): boolean {
   return file.type.startsWith('image/') || HEIC.test(file.name);
+}
+
+/** True when any pixel in RGBA data is noticeably see-through. */
+export function anyTransparent(rgba: Uint8ClampedArray): boolean {
+  for (let i = 3; i < rgba.length; i += 4) if (rgba[i] < 250) return true;
+  return false;
+}
+
+/** Checks a small copy of the photo, which is enough to tell a cut-out from a regular photo. */
+function hasTransparency(canvas: HTMLCanvasElement): boolean {
+  const probe = document.createElement('canvas');
+  probe.width = 96;
+  probe.height = 96;
+  const ctx = probe.getContext('2d', { willReadFrequently: true });
+  if (!ctx) return false;
+  ctx.drawImage(canvas, 0, 0, 96, 96);
+  return anyTransparent(ctx.getImageData(0, 0, 96, 96).data);
 }
 
 /** Size that fits `max` on the longest side, never upscaling. */
@@ -77,5 +96,5 @@ export async function loadPhoto(file: File): Promise<LoadedPhoto> {
   ctx.drawImage(source, 0, 0, width, height);
   if ('close' in source) source.close();
 
-  return { id: crypto.randomUUID(), canvas, width, height };
+  return { id: crypto.randomUUID(), canvas, width, height, hasAlpha: hasTransparency(canvas) };
 }

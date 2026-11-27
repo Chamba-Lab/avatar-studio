@@ -83,7 +83,9 @@ never touches app code. The format is documented in [docs/theme-schema.md](docs/
    - **Frame image**: 1024 × 1024 with a transparent center, at most 400 KB. Keep the decoration in
      a ring along the edge (80–100 % of the radius) and nothing in the corners: Discord crops them.
 3. **Add it to `theme.json`** with a kebab-case `id`, a short `name`, its `src`, optional
-   `defaults` (where it lands on the avatar) and your name in `credits`.
+   `defaults` (where it lands on the avatar) and your name in `credits`. If the sticker makes sense
+   in other colours (for example alert levels), add each colour as its own file under `variants`
+   (see the schema).
 4. **Run `npm test`**: it validates the JSON and every file (size, format, transparency, SVG
    rules) and fails with a clear message if something is off.
 5. **Try it in `npm run dev`** on a real photo and on the Rakim sample, then open the pull request

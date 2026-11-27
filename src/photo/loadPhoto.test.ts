@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fitWithin, isProbablyImage } from './loadPhoto.ts';
+import { anyTransparent, fitWithin, isProbablyImage } from './loadPhoto.ts';
 
 describe('fitWithin', () => {
   it('scales the longest side down to the limit', () => {
@@ -18,5 +18,12 @@ describe('isProbablyImage', () => {
   });
   it('rejects other files', () => {
     expect(isProbablyImage(new File([], 'doc.pdf', { type: 'application/pdf' }))).toBe(false);
+  });
+});
+
+describe('anyTransparent', () => {
+  it('tells a cut-out from an opaque photo', () => {
+    expect(anyTransparent(new Uint8ClampedArray([10, 20, 30, 255, 40, 50, 60, 255]))).toBe(false);
+    expect(anyTransparent(new Uint8ClampedArray([10, 20, 30, 255, 0, 0, 0, 0]))).toBe(true);
   });
 });

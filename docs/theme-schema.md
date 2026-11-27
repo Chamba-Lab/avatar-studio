@@ -48,6 +48,28 @@ Themes are discovered at build time with `import.meta.glob("/src/themes/*/theme.
       "src": "stickers/santa-hat.webp",
       "defaults": { "x": 0.5, "y": 0.2, "scale": 0.45, "rotation": -12 },
     },
+    {
+      "id": "exclamation",
+      "name": "Exclamation",
+      "src": "stickers/exclamation.svg",
+      // optional colour variants: the sticker's own src is the default colour, named here
+      "colorName": "Red",
+      "color": "#E53935",
+      "variants": [
+        {
+          "id": "orange",
+          "name": "Orange",
+          "color": "#FB8C00",
+          "src": "stickers/exclamation-orange.svg",
+        },
+        {
+          "id": "white",
+          "name": "White",
+          "color": "#FCF6E8",
+          "src": "stickers/exclamation-white.svg",
+        },
+      ],
+    },
   ],
   "credits": [{ "author": "Chamba Lab", "assets": ["wreath", "santa-hat"] }],
 }
@@ -55,6 +77,7 @@ Themes are discovered at build time with `import.meta.glob("/src/themes/*/theme.
 
 - **Coordinates are normalized** (0–1 of the canvas side; `scale` is relative to the canvas width), so the same data works for the on-screen preview and the 1024 px export.
 - `defaults` is optional; without it a sticker is placed centered at scale 0.4.
+- `variants` is optional: other colours of the same sticker, each its own file. `color` is the swatch shown in the editor. A sticker with variants also needs `colorName` and `color` for its default colour, and `default` is reserved as a variant id. Use variants only where a colour changes the meaning (for example alert levels: red, orange, white), not for every sticker.
 - An asset's global key is `themeId/assetId` (for example `christmas/santa-hat`), so IDs only have to be unique inside a theme.
 - `credits` records who made each asset. CONTRIBUTING states that contributors assign the rights to Chamba Lab.
 
@@ -73,11 +96,15 @@ type Scene = {
     scale: number;
     rotation: number;
     flipX: boolean;
-  }>; // array order = z-order (last is on top)
+    behindPhoto?: true; // drawn under the photo, over the background
+    variant?: string; // id of a colour variant; absent = default colour
+  }>; // array order = z-order (last is on top) inside each group: behind the photo, then over it
 };
 ```
 
 The photo itself (a decoded bitmap) is held outside the scene, because it never leaves the device and is not serializable.
+
+Drawing order: background, stickers behind the photo, photo, frame, the other stickers. The editor only offers "Behind the photo" when the sticker would still show: the photo has transparent pixels (a cut-out) or no longer covers the canvas. On a cut-out photo, only its visible pixels catch taps, so stickers behind it stay selectable.
 
 ## Asset rules (enforced by a Vitest check in CI)
 

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
 import { Circle, Image as KonvaImage, Layer, Rect, Shape, Stage, Transformer } from 'react-konva';
 import { blurredBackdrop } from '../photo/blurredBackdrop.ts';
 import type { LoadedPhoto } from '../photo/loadPhoto.ts';
-import { assets } from '../themes/catalog.ts';
+import { assets, stickerSrc } from '../themes/catalog.ts';
 import type { Scene, SceneAction, StickerInstance } from './scene.ts';
 import { HELPER } from './exportAvatar.ts';
 import { useImage } from './useImage.ts';
@@ -54,7 +54,7 @@ function StickerNode({
   onCommit: (action: SceneAction) => void;
   onLoaded: () => void;
 }) {
-  const image = useImage(assets.get(sticker.ref)?.src);
+  const image = useImage(stickerSrc(sticker.ref, sticker.variant));
   const nodeRef = useRef<Konva.Image>(null);
   useEffect(() => {
     if (image) onLoaded();
@@ -128,6 +128,17 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
   const wheelTimer = useRef<number | undefined>(undefined);
 
   const backdrop = useMemo(() => blurredBackdrop(photo), [photo]);
+
+  // On a cut-out photo, only its visible pixels catch taps, so stickers behind it stay reachable.
+  useEffect(() => {
+    const node = photoRef.current;
+    if (!node || !photo.hasAlpha) return;
+    node.cache();
+    node.drawHitFromCache();
+    return () => {
+      node.clearCache();
+    };
+  }, [photo, size]);
 
   // Cover-fit: at scale 1 the photo's short side fills the canvas.
   const cover = size / Math.min(photo.width, photo.height);
@@ -232,6 +243,19 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
         {scene.background.kind === 'color' && (
           <Rect width={size} height={size} fill={scene.background.color} listening={false} />
         )}
+        {/* Stickers sent behind the photo: over the background, under the photo and frame. */}
+        {scene.stickers
+          .filter((s) => s.behindPhoto)
+          .map((s) => (
+            <StickerNode
+              key={s.uid}
+              sticker={s}
+              size={size}
+              onSelect={onSelect}
+              onCommit={onCommit}
+              onLoaded={attachTransformer}
+            />
+          ))}
         <KonvaImage
           ref={photoRef}
           image={photo.canvas}
@@ -248,16 +272,18 @@ export function AvatarStage({ size, photo, scene, selected, onSelect, onCommit, 
           onDragEnd={(e) => commitNode(e.target)}
         />
         {scene.frame && <FrameNode frameKey={scene.frame} size={size} />}
-        {scene.stickers.map((s) => (
-          <StickerNode
-            key={s.uid}
-            sticker={s}
-            size={size}
-            onSelect={onSelect}
-            onCommit={onCommit}
-            onLoaded={attachTransformer}
-          />
-        ))}
+        {scene.stickers
+          .filter((s) => !s.behindPhoto)
+          .map((s) => (
+            <StickerNode
+              key={s.uid}
+              sticker={s}
+              size={size}
+              onSelect={onSelect}
+              onCommit={onCommit}
+              onLoaded={attachTransformer}
+            />
+          ))}
 
         {/* Editing aids: dim what Discord crops away, outline the circle. */}
         <Shape
