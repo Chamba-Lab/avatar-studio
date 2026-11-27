@@ -48,7 +48,7 @@ export function StartScreen({ onPhoto, onDemo }: Props) {
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 pt-4 pb-[max(1.75rem,env(safe-area-inset-bottom))] lg:max-w-5xl lg:flex-row lg:items-center lg:gap-16 lg:px-10">
       <header className="flex h-11 items-center justify-between lg:absolute lg:inset-x-0 lg:top-6 lg:mx-auto lg:max-w-5xl lg:px-10">
         <div className="flex items-center gap-2.5">
-          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" className="h-8 w-8" />
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" className="h-8 w-8" />
           <span className="font-display text-lg font-extrabold tracking-tight">Avatar Studio</span>
         </div>
         <a

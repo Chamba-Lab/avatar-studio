@@ -12,7 +12,7 @@ colours as the Konva transformer in `src/editor/AvatarStage.tsx`). The sources a
 | `logo/icon-small.svg`    | Favicon and sizes under 40 px: the mug only, the handles would be noise |
 | `logo/icon-maskable.svg` | Android maskable icon and iPhone home screen: the mark at 80 % on ink   |
 
-`public/favicon.svg` is a copy of `logo/icon-small.svg`.
+`public/logo.svg` (the browser tab icon) is a copy of `logo/icon-small.svg`. It was renamed from `favicon.svg` so browsers that cached the old mark fetch the new one; rename it again if the mark changes.
 
 ## Generated files in `public/`
 
