@@ -1,4 +1,4 @@
-import type { Placement, Theme, ThemeData } from './types.ts';
+import type { Placement, StickerVariant, Theme, ThemeData } from './types.ts';
 
 const themeFiles = import.meta.glob<ThemeData>('./*/theme.json', {
   eager: true,
@@ -26,6 +26,7 @@ function loadThemes(): Theme[] {
     stickers: data.stickers.map((s) => ({
       ...s,
       src: resolve(data.id, s.src),
+      variants: s.variants?.map((v) => ({ ...v, src: resolve(data.id, v.src) })),
       defaults: s.defaults ?? DEFAULT_PLACEMENT,
     })),
   }));
@@ -59,6 +60,8 @@ export type AssetInfo = {
   name: string;
   src: string;
   kind: 'frame' | 'sticker';
+  /** Colour variants of a sticker, with resolved URLs. The first one is the default colour. */
+  variants?: StickerVariant[];
 };
 
 /** Every frame and sticker by its global key, so a scene can mix assets from any theme. */
@@ -70,7 +73,28 @@ export const assets: ReadonlyMap<string, AssetInfo> = new Map(
     ]),
     ...t.stickers.map((s): [string, AssetInfo] => [
       assetKey(t.id, s.id),
-      { key: assetKey(t.id, s.id), themeId: t.id, name: s.name, src: s.src, kind: 'sticker' },
+      {
+        key: assetKey(t.id, s.id),
+        themeId: t.id,
+        name: s.name,
+        src: s.src,
+        kind: 'sticker',
+        variants: s.variants && [
+          {
+            id: 'default',
+            name: s.colorName ?? 'Default',
+            color: s.color ?? '#ffffff',
+            src: s.src,
+          },
+          ...s.variants,
+        ],
+      },
     ]),
   ]),
 );
+
+/** The image to draw for a sticker instance: its variant's file, or the default one. */
+export function stickerSrc(ref: string, variant?: string): string | undefined {
+  const info = assets.get(ref);
+  return info?.variants?.find((v) => v.id === variant)?.src ?? info?.src;
+}

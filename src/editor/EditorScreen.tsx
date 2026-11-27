@@ -20,7 +20,10 @@ import { StickerToolbar } from './StickerToolbar.tsx';
 import { useFirstUseGuide } from './useFirstUseGuide.ts';
 import {
   historyReducer,
+  isAtBack,
+  isOnTop,
   keyboardNudge,
+  photoCoversCanvas,
   stickerTileTap,
   type History,
   type Scene,
@@ -145,11 +148,50 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
     }
   };
 
-  const selectedActions = selected && (
+  const selectedSticker = scene.stickers.find((s) => s.uid === selected);
+  const variants = selectedSticker && assets.get(selectedSticker.ref)?.variants;
+  // "Behind the photo" only makes sense where the sticker would still show: a cut-out photo, or one
+  // that no longer covers the canvas. A sticker already behind keeps the button so it can come back.
+  const canGoBehind =
+    !!selectedSticker &&
+    (selectedSticker.behindPhoto ||
+      photo.hasAlpha ||
+      !photoCoversCanvas(scene.photo, photo.width / photo.height));
+
+  const selectedActions = selected && selectedSticker && (
     <StickerToolbar
-      onTop={scene.stickers.at(-1)?.uid === selected}
+      onTop={isOnTop(scene, selected)}
+      atBack={isAtBack(scene, selected)}
       onFlip={() => commit({ type: 'flipSticker', uid: selected })}
       onFront={() => commit({ type: 'bringToFront', uid: selected })}
+      onBack={() => commit({ type: 'sendToBack', uid: selected })}
+      behindPhoto={
+        canGoBehind
+          ? {
+              active: !!selectedSticker.behindPhoto,
+              onToggle: () =>
+                commit({
+                  type: 'setBehindPhoto',
+                  uid: selected,
+                  behind: !selectedSticker.behindPhoto,
+                }),
+            }
+          : null
+      }
+      colors={
+        variants
+          ? {
+              variants,
+              current: selectedSticker.variant ?? 'default',
+              onPick: (id) =>
+                commit({
+                  type: 'setVariant',
+                  uid: selected,
+                  variant: id === 'default' ? null : id,
+                }),
+            }
+          : null
+      }
       onDuplicate={() => {
         const uid = newUid();
         commit({ type: 'duplicateSticker', uid: selected, newUid: uid });

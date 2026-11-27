@@ -12,11 +12,23 @@ export type FrameAsset = {
   src: string;
 };
 
+/** Another colour of the same sticker. `color` is the swatch shown to pick it. */
+export type StickerVariant = {
+  id: string;
+  name: string;
+  color: string;
+  src: string;
+};
+
 export type StickerAsset = {
   id: string;
   name: string;
   src: string;
   defaults?: Placement;
+  /** Optional colour variants; the sticker's own `src` is the default colour, named by `colorName` and `color`. */
+  variants?: StickerVariant[];
+  colorName?: string;
+  color?: string;
 };
 
 /** Shape of a theme.json file. See docs/theme-schema.md. */

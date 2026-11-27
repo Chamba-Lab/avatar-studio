@@ -30,6 +30,22 @@ const themeSchema = z.strictObject({
         name: z.string().min(1).max(32),
         src: z.string(),
         defaults: placement.optional(),
+        variants: z
+          .array(
+            z.strictObject({
+              id,
+              name: z.string().min(1).max(24),
+              color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, '#RRGGBB'),
+              src: z.string(),
+            }),
+          )
+          .min(1)
+          .optional(),
+        colorName: z.string().min(1).max(24).optional(),
+        color: z
+          .string()
+          .regex(/^#[0-9A-Fa-f]{6}$/, '#RRGGBB')
+          .optional(),
       }),
     )
     .min(1),
@@ -98,12 +114,29 @@ describe.each(themeIds)('theme %s', (themeId) => {
     expect(new Set(ids).size).toBe(ids.length);
     const credited = raw.credits.flatMap((c: { assets: string[] }) => c.assets);
     for (const a of credited) expect(ids).toContain(a);
+    for (const s of raw.stickers as Array<{ id: string; variants?: Array<{ id: string }> }>) {
+      const vids = (s.variants ?? []).map((v) => v.id);
+      expect(new Set(vids).size, `${s.id}: variant ids must be unique`).toBe(vids.length);
+      expect(vids, `${s.id}: "default" is reserved for the sticker's own colour`).not.toContain(
+        'default',
+      );
+      if (vids.length) {
+        const named = s as { colorName?: string; color?: string };
+        expect(
+          named.colorName && named.color,
+          `${s.id}: variants need colorName and color`,
+        ).toBeTruthy();
+      }
+    }
   });
 
   const assets: Array<{ kind: 'frame' | 'sticker' | 'icon'; src: string }> = [
     { kind: 'icon', src: raw.icon },
     ...raw.frames.map((f: { src: string }) => ({ kind: 'frame' as const, src: f.src })),
     ...raw.stickers.map((s: { src: string }) => ({ kind: 'sticker' as const, src: s.src })),
+    ...raw.stickers.flatMap((s: { variants?: Array<{ src: string }> }) =>
+      (s.variants ?? []).map((v) => ({ kind: 'sticker' as const, src: v.src })),
+    ),
   ];
 
   it.each(assets)('$kind $src is valid', ({ kind, src }) => {

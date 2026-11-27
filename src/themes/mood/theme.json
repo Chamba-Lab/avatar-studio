@@ -31,7 +31,23 @@
         "y": 0.24,
         "scale": 0.24,
         "rotation": 0
-      }
+      },
+      "variants": [
+        {
+          "id": "orange",
+          "name": "Orange",
+          "color": "#FB8C00",
+          "src": "stickers/anger-vein-orange.svg"
+        },
+        {
+          "id": "white",
+          "name": "White",
+          "color": "#FCF6E8",
+          "src": "stickers/anger-vein-white.svg"
+        }
+      ],
+      "colorName": "Red",
+      "color": "#E53935"
     },
     {
       "id": "exclamation",
@@ -42,7 +58,23 @@
         "y": 0.24,
         "scale": 0.26,
         "rotation": -8
-      }
+      },
+      "variants": [
+        {
+          "id": "orange",
+          "name": "Orange",
+          "color": "#FB8C00",
+          "src": "stickers/exclamation-orange.svg"
+        },
+        {
+          "id": "white",
+          "name": "White",
+          "color": "#FCF6E8",
+          "src": "stickers/exclamation-white.svg"
+        }
+      ],
+      "colorName": "Red",
+      "color": "#E53935"
     },
     {
       "id": "huff",
