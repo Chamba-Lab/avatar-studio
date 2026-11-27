@@ -1,88 +1,98 @@
 // Generates the Mood fire frame: `node design/themes/mood/fire.cjs <output folder>`.
 //
-// Fire only along the bottom of the circle, as if the avatar sat on it: fire rises, so it never
-// hangs from the top. One hand-drawn cartoon flame (curled main tip, side licks, wide base, orange
-// and yellow layers inside) is repeated along a band of embers, tallest in the middle and smaller
-// toward the sides. Every flame and the band are drawn in ink first and in colour on top, so the
-// whole fire shares a single outline.
+// Simple cartoon fire along the bottom of the circle, in the spirit of the "This is fine" flames:
+// a few tall, wavy S-shaped tongues of different heights, joined into one mass, orange outside and
+// yellow inside, with a thin outline. Fire rises, so there is nothing at the top.
+//
+// The outline is drawn by hand as a straight wall of fire, then bent along the bottom arc of the
+// circle: the base follows the edge (a crescent) and the tongues rise.
 const fs = require('fs');
 
 const out = process.argv[2];
 const INK = '#111';
-const RED = '#E53935';
-const ORANGE = '#FF8A3D';
-const YELLOW = '#FFD54F';
+const ORANGE = '#FF6A1A';
+const YELLOW = '#FFC531';
+
+// The straight wall, left to right: small tongue, tall tongue, small lick, the tallest in the
+// middle, tall, small. x is the position along the fire, y the height (valleys near y = 385).
+const FIRE = [
+  'M-10 470 L-10 430',
+  'C8 400 16 330 22 306 C28 284 24 270 36 252 C40 280 50 304 54 330 C57 352 62 372 70 388',
+  'C82 370 78 346 90 326 C102 306 96 290 112 272 C116 294 132 308 138 332 C142 350 148 368 158 382',
+  'C166 368 170 354 178 346 C186 338 184 330 190 322 C196 336 200 348 204 356',
+  'C206 334 214 312 210 290 C208 272 216 258 228 246 C226 268 244 286 250 312 C254 334 252 356 262 380',
+  'C272 362 270 342 282 324 C292 308 288 296 302 282 C306 304 320 318 324 340 C326 356 332 370 342 384',
+  'C350 366 350 336 358 314 C364 294 362 280 372 262 C380 290 392 312 394 340 C396 362 404 400 412 430',
+  'L412 470 Z',
+].join(' ');
+
+// The yellow core: the same wall squashed toward its base, so each tongue has a hot inside.
+const core = ([x, y]) => [0.94 * x + 12, 0.6 * y + 168];
+
+// --- Bending the wall along the bottom arc ---------------------------------------------------
 const C = 200;
-const f1 = (n) => n.toFixed(1);
+const BASE_Y = 400; // wall height 0
+const HEIGHT = 0.8; // flame height after bending
+const SPAN = 60; // degrees on each side of the bottom
 
-// One flame, base centred at 0,0, pointing up: about 80 wide and 116 tall.
-const FLAME =
-  'M-34 0 C-44 -20 -34 -40 -27 -50 C-33 -62 -36 -74 -30 -88 C-24 -76 -17 -70 -12 -66 ' +
-  'C-14 -84 -6 -100 8 -116 C6 -100 14 -90 22 -80 C26 -86 30 -92 32 -100 ' +
-  'C40 -82 42 -60 37 -40 C34 -22 38 -10 32 0 Z';
-
-// Flames are placed along this arc of the circle.
-const FROM = 26; // degrees, SVG angles (90 is the bottom); matches where the ember band ends
-const TO = 154;
-// The band of embers: a crescent, `depth` thick at the bottom and thinning to nothing where the
-// side flames start. It is the circle minus a larger circle placed above.
-const band = (depth, color) =>
-  `<g mask="url(#m${depth})"><circle cx="200" cy="200" r="199" fill="${color}"/></g>`;
-const mask = (depth) =>
-  `<mask id="m${depth}"><rect width="400" height="400" fill="#fff"/><circle cx="200" cy="${399 - depth - 250}" r="250" fill="#000"/></mask>`;
-
-// Flames along the band, tallest at the bottom, leaning a little toward the middle.
-const flames = [];
-const STEPS = 11;
-for (let i = 0; i < STEPS; i++) {
-  const deg = FROM + 2 + ((TO - FROM - 4) * i) / (STEPS - 1);
-  const t = (deg * Math.PI) / 180;
-  const low = Math.sin(t); // 1 at the bottom
-  const s = (0.26 + 0.44 * Math.pow(low, 3)) * (i % 2 ? 0.86 : 1);
-  // Sit each flame inside the band, which is thinner toward the ends.
-  const lowest = Math.sin((FROM * Math.PI) / 180);
-  const band = 36 * Math.max(0, (low - lowest) / (1 - lowest));
-  const r = 199 - 3 - band * 0.55;
-  flames.push({
-    x: C + r * Math.cos(t),
-    y: C + r * Math.sin(t) + 6,
-    rot: -(90 - deg) * 0.35,
-    s,
-    flip: i % 2 ? -1 : 1,
-  });
+/** Samples a path of absolute M, L, C and Z commands into points. */
+function sample(d) {
+  const tokens = d.match(/[MLCZ]|-?\d*\.?\d+/g);
+  const pts = [];
+  let cur = [0, 0];
+  let i = 0;
+  const num = () => Number(tokens[i++]);
+  while (i < tokens.length) {
+    const cmd = tokens[i++];
+    if (cmd === 'M' || cmd === 'L') {
+      cur = [num(), num()];
+      pts.push(cur);
+    } else if (cmd === 'C') {
+      const c1 = [num(), num()];
+      const c2 = [num(), num()];
+      const end = [num(), num()];
+      for (let k = 1; k <= 16; k++) {
+        const t = k / 16;
+        const u = 1 - t;
+        pts.push(
+          [0, 1].map(
+            (j) =>
+              u * u * u * cur[j] +
+              3 * u * u * t * c1[j] +
+              3 * u * t * t * c2[j] +
+              t * t * t * end[j],
+          ),
+        );
+      }
+      cur = end;
+    }
+  }
+  return pts;
 }
-// Small ones first, so the tall middle flames sit in front.
-flames.sort((a, b) => a.s - b.s);
 
-const place = (f, inner) =>
-  `<g transform="translate(${f1(f.x)} ${f1(f.y)}) rotate(${f1(f.rot)}) scale(${f1(f.s * f.flip)} ${f1(f.s)})">${inner}</g>`;
-const ink = flames
-  .map((f) =>
-    place(
-      f,
-      `<path d="${FLAME}" fill="${INK}" stroke="${INK}" stroke-width="${f1(10 / f.s)}" stroke-linejoin="round"/>`,
-    ),
-  )
-  .join('');
-const colour = flames
-  .map((f) =>
-    place(
-      f,
-      `<path d="${FLAME}" fill="${RED}"/>` +
-        `<path d="${FLAME}" fill="${ORANGE}" transform="scale(0.66)"/>` +
-        `<path d="${FLAME}" fill="${YELLOW}" transform="scale(0.36)"/>`,
-    ),
-  )
-  .join('');
+/** x becomes the angle on the arc, height above BASE_Y becomes distance from the edge. */
+function bend([x, y]) {
+  const t = ((90 + ((C - x) / 211) * SPAN) * Math.PI) / 180;
+  // Flames rise: their direction mixes "toward the centre" with "up".
+  let dx = -Math.cos(t) * 0.35;
+  let dy = -Math.sin(t) * 0.35 - 0.65;
+  const len = Math.hypot(dx, dy);
+  dx /= len;
+  dy /= len;
+  const h = (BASE_Y - y) * HEIGHT;
+  return [C + 203 * Math.cos(t) + dx * h, C + 203 * Math.sin(t) + dy * h];
+}
 
-const body = `<defs><clipPath id="c"><circle cx="200" cy="200" r="199"/></clipPath>${mask(42)}${mask(36)}${mask(20)}${mask(9)}</defs>
+const toPath = (pts) => `M${pts.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join(' L')} Z`;
+/** The wall's flat bottom edge, sampled so it follows the arc once bent. */
+const bottom = (y) => Array.from({ length: 41 }, (_, k) => [412 - (422 * k) / 40, y]);
+const outer = toPath([...sample(FIRE), ...bottom(470)].map(bend));
+const inner = toPath([...sample(FIRE).map(core), ...bottom(core([0, 470])[1])].map(bend));
+
+const body = `<defs><clipPath id="c"><circle cx="200" cy="200" r="199"/></clipPath></defs>
 <g clip-path="url(#c)">
-${band(42, INK)}
-${ink}
-${band(36, RED)}
-${colour}
-${band(20, ORANGE)}
-${band(9, YELLOW)}
+<path d="${outer}" fill="${ORANGE}" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/>
+<path d="${inner}" fill="${YELLOW}"/>
 </g>`;
 
 fs.writeFileSync(
