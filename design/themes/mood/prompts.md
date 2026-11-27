@@ -5,13 +5,9 @@ Rakim's manga reactions, taken from the mascot's angry-coffee GIF. Final files g
 
 | Id            | Method       | Status  | Notes                                                    |
 | ------------- | ------------ | ------- | -------------------------------------------------------- |
-| `anger-vein`  | SVG (Claude) | in repo | Red cross-popping vein                                   |
+| `anger-vein`  | SVG (Claude) | in repo | Red cross-popping vein, four separate pieces             |
 | `exclamation` | SVG (Claude) | in repo | Double "!!", slanted                                     |
-| `huff`        | SVG (Claude) | in repo | Puff of air with two trailing puffs                      |
-| `lightning`   | SVG (Claude) | in repo | Red bolt                                                 |
 | `sweat-drop`  | SVG (Claude) | in repo | Nervous sweat drop                                       |
-| `focus-lines` | SVG (Claude) | in repo | Frame: manga focus lines pointing into the photo         |
-| `rage-burst`  | SVG (Claude) | in repo | Frame: jagged red ring with lightning                    |
 | `rakim-rage`  | Generate     | todo    | Rakim shouting with fangs and glowing eyes. Prompt below |
 
 ## rakim-rage
