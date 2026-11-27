@@ -13,7 +13,7 @@ const CHECKER =
   'bg-[conic-gradient(#3a3542_25%,#27232f_0_50%,#3a3542_0_75%,#27232f_0)] [background-size:12px_12px]';
 
 const ring = (on: boolean) =>
-  `h-10 w-10 rounded-full border-2 ${tileBase} ${on ? 'border-accent' : 'border-white/12'}`;
+  `h-11 w-11 rounded-full border-2 ${tileBase} ${on ? 'border-accent' : 'border-white/12'}`;
 
 type Props = {
   background: Background;

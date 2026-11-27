@@ -25,7 +25,7 @@ function ActionButton({
       title={label}
       onClick={onClick}
       disabled={disabled}
-      className={`flex h-10 w-11 items-center justify-center rounded-[13px] transition-[transform,opacity] duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${tones[tone]}`}
+      className={`flex h-11 w-11 items-center justify-center rounded-[13px] transition-[transform,opacity] duration-150 active:scale-90 disabled:pointer-events-none disabled:opacity-30 ${tones[tone]}`}
     >
       <Icon name={icon} size={19} />
     </button>
