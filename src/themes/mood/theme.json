@@ -6,14 +6,19 @@
   "order": 25,
   "frames": [
     {
-      "id": "focus-lines",
-      "name": "Focus lines",
-      "src": "frames/focus-lines.svg"
+      "id": "mood-ring",
+      "name": "Mood ring",
+      "src": "frames/mood-ring.svg"
     },
     {
-      "id": "rage-burst",
-      "name": "Rage burst",
-      "src": "frames/rage-burst.svg"
+      "id": "seeing-red",
+      "name": "Seeing red",
+      "src": "frames/seeing-red.svg"
+    },
+    {
+      "id": "worried",
+      "name": "Worried",
+      "src": "frames/worried.svg"
     }
   ],
   "stickers": [
@@ -77,8 +82,9 @@
     {
       "author": "Chamba Lab",
       "assets": [
-        "focus-lines",
-        "rage-burst",
+        "mood-ring",
+        "seeing-red",
+        "worried",
         "anger-vein",
         "exclamation",
         "huff",
