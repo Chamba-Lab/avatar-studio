@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- Renders the PNG icons in public/ from logo/*.svg; see design/social/README.md. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        background: #fff;
+      }
+      img {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="icon-512" src="logo/icon.svg" width="512" height="512" alt="" />
+    <img id="icon-192" src="logo/icon.svg" width="192" height="192" alt="" />
+    <img id="apple-touch-icon" src="logo/icon-maskable.svg" width="180" height="180" alt="" />
+    <img id="icon-maskable-512" src="logo/icon-maskable.svg" width="512" height="512" alt="" />
+  </body>
+</html>
