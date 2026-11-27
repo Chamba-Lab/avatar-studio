@@ -3,12 +3,16 @@
 Rakim's manga reactions, taken from the mascot's angry-coffee GIF. Final files go to
 `src/themes/mood/` with the id as file name. See `design/style-guide.md` for the shared rules.
 
-| Id            | Method       | Status  | Notes                                                    |
-| ------------- | ------------ | ------- | -------------------------------------------------------- |
-| `anger-vein`  | SVG (Claude) | in repo | Red cross-popping vein, four separate pieces             |
-| `exclamation` | SVG (Claude) | in repo | Double "!!", slanted                                     |
-| `sweat-drop`  | SVG (Claude) | in repo | Nervous sweat drop                                       |
-| `rakim-rage`  | Generate     | todo    | Rakim shouting with fangs and glowing eyes. Prompt below |
+| Id            | Method       | Status  | Notes                                                                |
+| ------------- | ------------ | ------- | -------------------------------------------------------------------- |
+| `anger-vein`  | SVG (Claude) | in repo | Red cross-popping vein, four separate pieces                         |
+| `exclamation` | SVG (Claude) | in repo | Double "!!", slanted                                                 |
+| `huff`        | SVG (Claude) | in repo | Puff of air: four lobes, a short tail toward the nose, speed strokes |
+| `lightning`   | SVG (Claude) | in repo | Red bolt with an even outline and a clipped shade                    |
+| `focus-lines` | SVG (Claude) | in repo | Frame: tapered manga rays with a cream halo, in uneven clusters      |
+| `rage-burst`  | SVG (Claude) | in repo | Frame: flame tongues in four tones with flying shards                |
+| `sweat-drop`  | SVG (Claude) | in repo | Nervous sweat drop                                                   |
+| `rakim-rage`  | Generate     | todo    | Rakim shouting with fangs and glowing eyes. Prompt below             |
 
 ## rakim-rage
 

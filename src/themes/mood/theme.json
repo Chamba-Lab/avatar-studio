@@ -4,7 +4,18 @@
   "name": "Mood",
   "icon": "icon.svg",
   "order": 25,
-  "frames": [],
+  "frames": [
+    {
+      "id": "focus-lines",
+      "name": "Focus lines",
+      "src": "frames/focus-lines.svg"
+    },
+    {
+      "id": "rage-burst",
+      "name": "Rage burst",
+      "src": "frames/rage-burst.svg"
+    }
+  ],
   "stickers": [
     {
       "id": "anger-vein",
@@ -29,6 +40,28 @@
       }
     },
     {
+      "id": "huff",
+      "name": "Huff",
+      "src": "stickers/huff.svg",
+      "defaults": {
+        "x": 0.2,
+        "y": 0.62,
+        "scale": 0.3,
+        "rotation": 0
+      }
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "src": "stickers/lightning.svg",
+      "defaults": {
+        "x": 0.82,
+        "y": 0.64,
+        "scale": 0.24,
+        "rotation": 10
+      }
+    },
+    {
       "id": "sweat-drop",
       "name": "Sweat drop",
       "src": "stickers/sweat-drop.svg",
@@ -43,7 +76,15 @@
   "credits": [
     {
       "author": "Chamba Lab",
-      "assets": ["anger-vein", "exclamation", "sweat-drop"]
+      "assets": [
+        "focus-lines",
+        "rage-burst",
+        "anger-vein",
+        "exclamation",
+        "huff",
+        "lightning",
+        "sweat-drop"
+      ]
     }
   ]
 }
