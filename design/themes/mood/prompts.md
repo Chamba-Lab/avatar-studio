@@ -3,17 +3,17 @@
 Rakim's manga reactions, taken from the mascot's angry-coffee GIF. Final files go to
 `src/themes/mood/` with the id as file name. See `design/style-guide.md` for the shared rules.
 
-| Id            | Method       | Status  | Notes                                                                                   |
-| ------------- | ------------ | ------- | --------------------------------------------------------------------------------------- |
-| `anger-vein`  | SVG (Claude) | in repo | Red cross-popping vein, four separate pieces                                            |
-| `exclamation` | SVG (Claude) | in repo | Double "!!", slanted                                                                    |
-| `huff`        | SVG (Claude) | in repo | Puff of air: four lobes, a short tail toward the nose, speed strokes                    |
-| `lightning`   | SVG (Claude) | in repo | Classic yellow energy bolt, even outline, clipped shade                                 |
-| `on-fire`     | SVG (Claude) | in repo | Frame: one continuous fire ring with a single outline, tallest at the bottom, no embers |
-| `seeing-red`  | SVG (Claude) | in repo | Frame: red manga screentone growing toward the edge                                     |
-| `worried`     | SVG (Claude) | in repo | Frame: the same screentone in orange, one level below anger                             |
-| `sweat-drop`  | SVG (Claude) | in repo | Nervous sweat drop                                                                      |
-| `rakim-rage`  | Generate     | todo    | Rakim shouting with fangs and glowing eyes. Prompt below                                |
+| Id            | Method       | Status  | Notes                                                                                 |
+| ------------- | ------------ | ------- | ------------------------------------------------------------------------------------- |
+| `anger-vein`  | SVG (Claude) | in repo | Red cross-popping vein, four separate pieces                                          |
+| `exclamation` | SVG (Claude) | in repo | Double "!!", slanted                                                                  |
+| `huff`        | SVG (Claude) | in repo | Puff of air: four lobes, a short tail toward the nose, speed strokes                  |
+| `lightning`   | SVG (Claude) | in repo | Classic yellow energy bolt, even outline, clipped shade                               |
+| `on-fire`     | SVG (Claude) | in repo | Frame: cartoon fire along the bottom only, on a band of embers, with a single outline |
+| `seeing-red`  | SVG (Claude) | in repo | Frame: red manga screentone growing toward the edge                                   |
+| `worried`     | SVG (Claude) | in repo | Frame: the same screentone in orange, one level below anger                           |
+| `sweat-drop`  | SVG (Claude) | in repo | Nervous sweat drop                                                                    |
+| `rakim-rage`  | Generate     | todo    | Rakim shouting with fangs and glowing eyes. Prompt below                              |
 
 ## rakim-rage
 
