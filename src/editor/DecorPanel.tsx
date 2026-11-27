@@ -89,7 +89,7 @@ export function DecorPanel(props: Props) {
             aria-controls="decor-panel"
             tabIndex={tab === t.id ? 0 : -1}
             onClick={() => onTab(t.id)}
-            className={`relative h-10 text-sm font-semibold transition-colors ${tab === t.id ? 'text-text' : 'text-muted'}`}
+            className={`relative h-11 text-sm font-semibold transition-colors ${tab === t.id ? 'text-text' : 'text-muted'}`}
           >
             {t.label}
           </button>
@@ -104,7 +104,7 @@ export function DecorPanel(props: Props) {
               type="button"
               aria-pressed={t.id === theme.id}
               onClick={() => setThemeId(t.id)}
-              className={`flex h-9 shrink-0 items-center gap-2 rounded-full border pr-3.5 pl-2 text-[13px] font-semibold ${tileBase} ${
+              className={`flex h-11 shrink-0 items-center gap-2 rounded-full border pr-3.5 pl-2 text-[13px] font-semibold ${tileBase} ${
                 t.id === theme.id ? 'border-accent bg-accent/14' : 'border-white/14'
               }`}
             >
@@ -112,7 +112,7 @@ export function DecorPanel(props: Props) {
               {t.name}
             </button>
           ))}
-          <span className="flex h-9 shrink-0 items-center rounded-full border border-dashed border-white/16 px-3 text-[13px] text-muted">
+          <span className="flex h-11 shrink-0 items-center rounded-full border border-dashed border-white/16 px-3 text-[13px] text-muted">
             More soon
           </span>
         </div>

@@ -9,6 +9,11 @@
       "id": "lab-ring",
       "name": "Lab ring",
       "src": "frames/lab-ring.svg"
+    },
+    {
+      "id": "coffee-ring",
+      "name": "Coffee ring",
+      "src": "frames/coffee-ring.svg"
     }
   ],
   "stickers": [
@@ -161,6 +166,7 @@
       "author": "Chamba Lab",
       "assets": [
         "lab-ring",
+        "coffee-ring",
         "lab-badge",
         "laptop",
         "git-branch",

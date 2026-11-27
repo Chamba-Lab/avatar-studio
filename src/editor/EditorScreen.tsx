@@ -185,7 +185,7 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
               aria-label="Undo"
               disabled={!history.past.length}
               onClick={() => dispatch({ type: 'undo' })}
-              className="flex h-[38px] w-[42px] items-center justify-center rounded-[11px] disabled:text-white/25"
+              className="flex h-11 w-11 items-center justify-center rounded-[11px] disabled:text-white/25"
             >
               <Icon name="undo" size={19} />
             </button>
@@ -194,7 +194,7 @@ export function EditorScreen({ photo, initialHistory, onClose, onReplacePhoto, o
               aria-label="Redo"
               disabled={!history.future.length}
               onClick={() => dispatch({ type: 'redo' })}
-              className="flex h-[38px] w-[42px] items-center justify-center rounded-[11px] disabled:text-white/25"
+              className="flex h-11 w-11 items-center justify-center rounded-[11px] disabled:text-white/25"
             >
               <Icon name="redo" size={19} />
             </button>
