@@ -6,9 +6,9 @@
   "order": 25,
   "frames": [
     {
-      "id": "mood-ring",
-      "name": "Mood ring",
-      "src": "frames/mood-ring.svg"
+      "id": "on-fire",
+      "name": "On fire",
+      "src": "frames/on-fire.webp"
     },
     {
       "id": "seeing-red",
@@ -82,7 +82,7 @@
     {
       "author": "Chamba Lab",
       "assets": [
-        "mood-ring",
+        "on-fire",
         "seeing-red",
         "worried",
         "anger-vein",
