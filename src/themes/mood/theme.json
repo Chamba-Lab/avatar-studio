@@ -33,8 +33,8 @@
       "name": "Sweat drop",
       "src": "stickers/sweat-drop.svg",
       "defaults": {
-        "x": 0.7,
-        "y": 0.44,
+        "x": 0.84,
+        "y": 0.42,
         "scale": 0.2,
         "rotation": 10
       }
