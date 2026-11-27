@@ -1,6 +1,6 @@
 import { useRef } from 'react';
-import rakim from '../assets/showcase/rakim.webp';
-import rakimChristmas from '../assets/showcase/rakim-christmas.webp';
+// The same cut-out photo as "try it with Rakim", so the examples match what the editor really does.
+import demo from '../assets/demo/rakim-demo.webp';
 import { themes } from '../themes/catalog';
 
 type Props = {
@@ -18,12 +18,15 @@ type ShowcaseSticker = { src?: string; left: number; top: number; width: number;
 
 function ShowcaseCard({
   photo,
+  background,
   frame,
   stickers = [],
   className,
   sizeClass,
 }: {
   photo: string;
+  /** One of the editor's background colours, behind the cut-out photo. */
+  background: string;
   frame?: string;
   stickers?: ShowcaseSticker[];
   className: string;
@@ -34,7 +37,10 @@ function ShowcaseCard({
       className={`absolute flex items-center justify-center rounded-[28px] border border-hairline bg-surface shadow-[0_24px_50px_rgb(0_0_0/0.45)] ${className}`}
     >
       <div className={`relative ${sizeClass}`}>
-        <img src={photo} alt="" className="absolute inset-[6%] h-[88%] w-[88%] rounded-full" />
+        {/* Framed like a person would in the editor: zoomed in on the face. */}
+        <div className="absolute inset-[6%] overflow-hidden rounded-full" style={{ background }}>
+          <img src={photo} alt="" className="h-full w-full scale-[1.35] translate-y-[10%]" />
+        </div>
         {frame && <img src={frame} alt="" className="absolute inset-0 h-full w-full" />}
         {stickers.map(
           (st, i) =>
@@ -88,26 +94,32 @@ export function StartScreen({ onPhoto, onDemo }: Props) {
         aria-hidden="true"
       >
         <ShowcaseCard
-          photo={rakim}
+          photo={demo}
+          background="#f7b696"
           frame={frameOf('mood', 'on-fire')}
           stickers={[
-            { src: stickerOf('mood', 'anger-vein'), left: 2, top: 4, width: 28, rotate: -12 },
+            { src: stickerOf('mood', 'anger-vein'), left: 12, top: 14, width: 24, rotate: -10 },
           ]}
           sizeClass="h-[104px] w-[104px] lg:h-[150px] lg:w-[150px]"
           className="top-[70px] left-0 h-[170px] w-[140px] -rotate-12 lg:top-[130px] lg:h-[230px] lg:w-[190px]"
         />
         <ShowcaseCard
-          photo={rakim}
+          photo={demo}
+          background="#7ce0c3"
           frame={frameOf('new-year', 'confetti-ring')}
           stickers={[
-            { src: stickerOf('new-year', 'party-hat'), left: 46, top: -6, width: 34, rotate: 14 },
+            { src: stickerOf('new-year', 'party-hat'), left: 50, top: -6, width: 32, rotate: 18 },
           ]}
           sizeClass="h-[104px] w-[104px] lg:h-[150px] lg:w-[150px]"
           className="top-[58px] right-0 h-[170px] w-[140px] rotate-[11deg] lg:top-[110px] lg:h-[230px] lg:w-[190px]"
         />
         <ShowcaseCard
-          photo={rakimChristmas}
+          photo={demo}
+          background="#fcf6e8"
           frame={frameOf('christmas', 'wreath')}
+          stickers={[
+            { src: stickerOf('christmas', 'santa-hat'), left: 30, top: -4, width: 50, rotate: 10 },
+          ]}
           sizeClass="h-[132px] w-[132px] lg:h-[190px] lg:w-[190px]"
           className="top-2 left-[calc(50%-80px)] h-[200px] w-[160px] animate-float bg-raised lg:left-[calc(50%-115px)] lg:h-[290px] lg:w-[230px]"
         />

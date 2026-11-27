@@ -136,6 +136,17 @@
         height: 88%;
         border-radius: 50%;
       }
+      .av .photo-wrap {
+        position: absolute;
+        inset: 6%;
+        overflow: hidden;
+        border-radius: 50%;
+      }
+      .av .photo-wrap img {
+        width: 100%;
+        height: 100%;
+        transform: scale(1.35) translateY(10%);
+      }
       .av .sticker {
         position: absolute;
         height: auto;
@@ -164,25 +175,29 @@
       <div class="stage">
         <div class="card" style="left: 0; top: 150px; width: 200px; height: 245px; rotate: -12deg">
           <div class="av" style="width: 150px; height: 150px">
-            <img class="photo" src="../../src/assets/showcase/rakim.webp" alt="" />
+            <div class="photo-wrap" style="background: #f7b696">
+              <img src="../../src/assets/demo/rakim-demo.webp" alt="" />
+            </div>
             <img class="frame" src="../../src/themes/mood/frames/on-fire.webp" alt="" />
             <img
               class="sticker"
               src="../../src/themes/mood/stickers/anger-vein.svg"
               alt=""
-              style="left: 2%; top: 4%; width: 28%; rotate: -12deg"
+              style="left: 12%; top: 14%; width: 24%; rotate: -10deg"
             />
           </div>
         </div>
         <div class="card" style="right: 0; top: 130px; width: 200px; height: 245px; rotate: 11deg">
           <div class="av" style="width: 150px; height: 150px">
-            <img class="photo" src="../../src/assets/showcase/rakim.webp" alt="" />
+            <div class="photo-wrap" style="background: #7ce0c3">
+              <img src="../../src/assets/demo/rakim-demo.webp" alt="" />
+            </div>
             <img class="frame" src="../../src/themes/new-year/frames/confetti-ring.svg" alt="" />
             <img
               class="sticker"
               src="../../src/themes/new-year/stickers/party-hat.svg"
               alt=""
-              style="left: 46%; top: -6%; width: 34%; rotate: 14deg"
+              style="left: 50%; top: -6%; width: 32%; rotate: 18deg"
             />
           </div>
         </div>
@@ -191,8 +206,16 @@
           style="left: 125px; top: 110px; width: 270px; height: 340px; rotate: -2deg"
         >
           <div class="av" style="width: 220px; height: 220px">
-            <img class="photo" src="../../src/assets/showcase/rakim-christmas.webp" alt="" />
+            <div class="photo-wrap" style="background: #fcf6e8">
+              <img src="../../src/assets/demo/rakim-demo.webp" alt="" />
+            </div>
             <img class="frame" src="../../src/themes/christmas/frames/wreath.webp" alt="" />
+            <img
+              class="sticker"
+              src="../../src/themes/christmas/stickers/santa-hat.svg"
+              alt=""
+              style="left: 30%; top: -4%; width: 50%; rotate: 10deg"
+            />
           </div>
         </div>
       </div>
