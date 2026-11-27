@@ -12,12 +12,14 @@ export type FrameAsset = {
   src: string;
 };
 
-/** Another colour of the same sticker. `color` is the swatch shown to pick it. */
-export type StickerVariant = {
-  id: string;
-  name: string;
-  color: string;
-  src: string;
+/**
+ * A vector sticker that can be recoloured. `colors` are the hex colours of its main shape as written
+ * in the SVG: the first is the base, the rest its shades and highlights (they follow the base).
+ * `suggested` is one extra colour offered next to the original and the free picker.
+ */
+export type StickerTint = {
+  colors: string[];
+  suggested?: { name: string; color: string };
 };
 
 export type StickerAsset = {
@@ -25,10 +27,8 @@ export type StickerAsset = {
   name: string;
   src: string;
   defaults?: Placement;
-  /** Optional colour variants; the sticker's own `src` is the default colour, named by `colorName` and `color`. */
-  variants?: StickerVariant[];
-  colorName?: string;
-  color?: string;
+  /** Optional: lets people recolour a vector sticker. */
+  tint?: StickerTint;
 };
 
 /** Shape of a theme.json file. See docs/theme-schema.md. */

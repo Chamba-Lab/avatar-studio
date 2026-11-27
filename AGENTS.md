@@ -42,7 +42,7 @@ Key ideas:
 - **Normalized coordinates**: positions are 0–1 of the canvas side, so the same scene works at any
   size.
 - **Themes are data**: adding art never touches app code, and `src/themes/themes.test.ts`
-  validates every theme and file. Stickers can declare colour `variants` (separate files).
+  validates every theme and file. SVG stickers can declare a `tint` so people recolour them.
 - **Layers**: background, stickers behind the photo, photo, frame, other stickers. "Behind the
   photo" is only offered when the sticker would still show (cut-out photo, or photo zoomed out).
 - **Accessibility**: the canvas is editable by keyboard (Tab, arrows, `+`/`-`, `[`/`]`), the panel

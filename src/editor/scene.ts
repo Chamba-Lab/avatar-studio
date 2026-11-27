@@ -14,8 +14,8 @@ export type StickerInstance = Placement & {
   flipX: boolean;
   /** Drawn under the photo (still over the background). Only visible where the photo does not cover. */
   behindPhoto?: boolean;
-  /** Id of one of the sticker's colour variants; absent means the default colour. */
-  variant?: string;
+  /** Colour a tintable sticker is recoloured to (#RRGGBB); absent means its original colour. */
+  tint?: string;
 };
 
 /** What fills the canvas where the photo does not reach (after zooming out or moving it). */
@@ -58,7 +58,7 @@ export type SceneAction =
   | { type: 'bringToFront'; uid: string }
   | { type: 'sendToBack'; uid: string }
   | { type: 'setBehindPhoto'; uid: string; behind: boolean }
-  | { type: 'setVariant'; uid: string; variant: string | null }
+  | { type: 'setTint'; uid: string; tint: string | null }
   | { type: 'setFrame'; frame: string | null }
   | { type: 'setBackground'; background: Background }
   | { type: 'updatePhoto'; patch: Partial<PhotoTransform> }
@@ -124,11 +124,11 @@ export function applyAction(scene: Scene, action: SceneAction): Scene {
         else delete next.behindPhoto;
         return next;
       });
-    case 'setVariant':
+    case 'setTint':
       return mapSticker(action.uid, (s) => {
         const next = { ...s };
-        if (action.variant) next.variant = action.variant;
-        else delete next.variant;
+        if (action.tint) next.tint = action.tint;
+        else delete next.tint;
         return next;
       });
     case 'setFrame':

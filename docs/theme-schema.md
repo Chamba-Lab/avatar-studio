@@ -52,23 +52,11 @@ Themes are discovered at build time with `import.meta.glob("/src/themes/*/theme.
       "id": "exclamation",
       "name": "Exclamation",
       "src": "stickers/exclamation.svg",
-      // optional colour variants: the sticker's own src is the default colour, named here
-      "colorName": "Red",
-      "color": "#E53935",
-      "variants": [
-        {
-          "id": "orange",
-          "name": "Orange",
-          "color": "#FB8C00",
-          "src": "stickers/exclamation-orange.svg",
-        },
-        {
-          "id": "white",
-          "name": "White",
-          "color": "#FCF6E8",
-          "src": "stickers/exclamation-white.svg",
-        },
-      ],
+      // optional: lets people recolour this vector sticker
+      "tint": {
+        "colors": ["#E53935", "#B71C1C"], // base colour first, then its shades and highlights
+        "suggested": { "name": "Orange", "color": "#FB8C00" }, // optional extra swatch
+      },
     },
   ],
   "credits": [{ "author": "Chamba Lab", "assets": ["wreath", "santa-hat"] }],
@@ -77,7 +65,7 @@ Themes are discovered at build time with `import.meta.glob("/src/themes/*/theme.
 
 - **Coordinates are normalized** (0–1 of the canvas side; `scale` is relative to the canvas width), so the same data works for the on-screen preview and the 1024 px export.
 - `defaults` is optional; without it a sticker is placed centered at scale 0.4.
-- `variants` is optional: other colours of the same sticker, each its own file. `color` is the swatch shown in the editor. A sticker with variants also needs `colorName` and `color` for its default colour, and `default` is reserved as a variant id. Use variants only where a colour changes the meaning (for example alert levels: red, orange, white), not for every sticker.
+- `tint` is optional and only for SVG stickers. `colors` lists the hex colours of the main shape as written in the file: the first is the base, the rest its shades and highlights. When someone picks a colour, the base becomes that colour and each shade keeps its distance in hue, saturation and lightness, so the drawing keeps its depth. The editor shows the original colour, the `suggested` one and a free colour picker. Leave outlines and die-cut borders out of `colors`.
 - An asset's global key is `themeId/assetId` (for example `christmas/santa-hat`), so IDs only have to be unique inside a theme.
 - `credits` records who made each asset. CONTRIBUTING states that contributors assign the rights to Chamba Lab.
 
@@ -97,7 +85,7 @@ type Scene = {
     rotation: number;
     flipX: boolean;
     behindPhoto?: true; // drawn under the photo, over the background
-    variant?: string; // id of a colour variant; absent = default colour
+    tint?: string; // #RRGGBB for a tintable sticker; absent = its original colour
   }>; // array order = z-order (last is on top) inside each group: behind the photo, then over it
 };
 ```

@@ -10,15 +10,22 @@ type Props = {
 
 const frameOf = (themeId: string, frameId: string) =>
   themes.find((t) => t.id === themeId)?.frames.find((f) => f.id === frameId)?.src;
+const stickerOf = (themeId: string, stickerId: string) =>
+  themes.find((t) => t.id === themeId)?.stickers.find((s) => s.id === stickerId)?.src;
+
+/** A sticker on a showcase avatar, placed in percent of the avatar box. */
+type ShowcaseSticker = { src?: string; left: number; top: number; width: number; rotate: number };
 
 function ShowcaseCard({
   photo,
   frame,
+  stickers = [],
   className,
   sizeClass,
 }: {
   photo: string;
   frame?: string;
+  stickers?: ShowcaseSticker[];
   className: string;
   sizeClass: string;
 }) {
@@ -29,6 +36,23 @@ function ShowcaseCard({
       <div className={`relative ${sizeClass}`}>
         <img src={photo} alt="" className="absolute inset-[6%] h-[88%] w-[88%] rounded-full" />
         {frame && <img src={frame} alt="" className="absolute inset-0 h-full w-full" />}
+        {stickers.map(
+          (st, i) =>
+            st.src && (
+              <img
+                key={i}
+                src={st.src}
+                alt=""
+                className="absolute h-auto"
+                style={{
+                  left: `${st.left}%`,
+                  top: `${st.top}%`,
+                  width: `${st.width}%`,
+                  rotate: `${st.rotate}deg`,
+                }}
+              />
+            ),
+        )}
       </div>
     </div>
   );
@@ -65,13 +89,19 @@ export function StartScreen({ onPhoto, onDemo }: Props) {
       >
         <ShowcaseCard
           photo={rakim}
-          frame={frameOf('chamba-lab', 'lab-ring')}
+          frame={frameOf('mood', 'on-fire')}
+          stickers={[
+            { src: stickerOf('mood', 'anger-vein'), left: 2, top: 4, width: 28, rotate: -12 },
+          ]}
           sizeClass="h-[104px] w-[104px] lg:h-[150px] lg:w-[150px]"
           className="top-[70px] left-0 h-[170px] w-[140px] -rotate-12 lg:top-[130px] lg:h-[230px] lg:w-[190px]"
         />
         <ShowcaseCard
           photo={rakim}
-          frame={frameOf('christmas', 'lights-ring')}
+          frame={frameOf('new-year', 'confetti-ring')}
+          stickers={[
+            { src: stickerOf('new-year', 'party-hat'), left: 46, top: -6, width: 34, rotate: 14 },
+          ]}
           sizeClass="h-[104px] w-[104px] lg:h-[150px] lg:w-[150px]"
           className="top-[58px] right-0 h-[170px] w-[140px] rotate-[11deg] lg:top-[110px] lg:h-[230px] lg:w-[190px]"
         />

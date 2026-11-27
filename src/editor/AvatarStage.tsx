@@ -3,10 +3,11 @@ import { useCallback, useEffect, useMemo, useRef, type RefObject } from 'react';
 import { Circle, Image as KonvaImage, Layer, Rect, Shape, Stage, Transformer } from 'react-konva';
 import { blurredBackdrop } from '../photo/blurredBackdrop.ts';
 import type { LoadedPhoto } from '../photo/loadPhoto.ts';
-import { assets, stickerSrc } from '../themes/catalog.ts';
+import { assets } from '../themes/catalog.ts';
 import type { Scene, SceneAction, StickerInstance } from './scene.ts';
 import { HELPER } from './exportAvatar.ts';
 import { useImage } from './useImage.ts';
+import { useStickerSrc } from './useStickerSrc.ts';
 import { prefersCoarsePointer, prefersReducedMotion } from '../ui/media.ts';
 import { color } from '../ui/tokens.ts';
 import type { Placement } from '../themes/types.ts';
@@ -54,7 +55,7 @@ function StickerNode({
   onCommit: (action: SceneAction) => void;
   onLoaded: () => void;
 }) {
-  const image = useImage(stickerSrc(sticker.ref, sticker.variant));
+  const image = useImage(useStickerSrc(sticker.ref, sticker.tint));
   const nodeRef = useRef<Konva.Image>(null);
   useEffect(() => {
     if (image) onLoaded();
